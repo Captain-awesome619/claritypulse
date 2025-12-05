@@ -38,6 +38,7 @@ import { FaClock } from "react-icons/fa";
 import { LuMousePointerClick } from "react-icons/lu";
 import { color } from 'framer-motion';
 import { FaMap } from "react-icons/fa";
+import Modal from 'react-modal';
 
 type Events = {
   type: string;
@@ -70,6 +71,7 @@ const allEvents = useMemo(() => dataa, [dataa]);
 
 const mouseCount = allEvents.filter((e) => e.type === "mouse").length;
 const count = allEvents.filter((e) => e.type === "click").length;
+const scroll = allEvents.filter((e) => e.type === "scroll").length;
   
 
   const sessionDuration = (() => {
@@ -100,8 +102,8 @@ const count = allEvents.filter((e) => e.type === "click").length;
     : sessionDurationSec;
 
   const unit = inMinutes ? "min" : "sec";
-
-  
+ const [showModal, setShowModal] = useState(false);
+  Modal.setAppElement("body");
   return (
     <div className='grid gap-8'>
       <div className='flex items-center justify-between '>
@@ -113,7 +115,7 @@ const count = allEvents.filter((e) => e.type === "click").length;
               className="px-4 py-3 rounded-3xl 
               bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
               shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center gap-2"
-            
+              onClick={() => setShowModal(true)}
             >
               <div>
                 <FaMap size={15} color="white" />
@@ -241,6 +243,7 @@ const count = allEvents.filter((e) => e.type === "click").length;
   data={[
     { name: "Mouse Events", value: mouseCount },
     { name: "Clicks", value: count },
+    { name: "Scroll", value: scroll },
   ]}
   barCategoryGap={20}
 >
@@ -252,10 +255,17 @@ const count = allEvents.filter((e) => e.type === "click").length;
     {[
       { name: "Mouse Events", value: mouseCount },
       { name: "Clicks", value: count },
+      { name: "Scroll", value: scroll },
     ].map((entry, index) => (
       <Cell
         key={`cell-${index}`}
-        fill={entry.name === "Clicks" ? "#f472b6" : "#82ca9d"}
+     fill={
+  entry.name === "Clicks"
+    ? "#f472b6"      
+    : entry.name === "Scroll"
+    ? "#6366f1"          
+    : "#82ca9d"    
+}
       />
     ))}
   </Bar>
@@ -265,10 +275,10 @@ const count = allEvents.filter((e) => e.type === "click").length;
         </Card>
      
 
-      <Card>
+      <Card className='mb-12'>
         <Title className='text-sm font-figtree font-semibold text-gray-700'>Event Type Breakdown</Title>
         <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
+          <PieChart className='pb-12'>
             <Pie
               data={[
                 { name: "Scroll", value: scrollData.length },
@@ -289,6 +299,41 @@ const count = allEvents.filter((e) => e.type === "click").length;
 
       </div>
       </div>
+
+
+         {/* React Modal */}
+      <Modal
+        isOpen={showModal}
+        onRequestClose={() => setShowModal(false)}
+        contentLabel="Feature Coming Soon"
+        style={{
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      transform: "translate(-50%, -50%)",
+      padding: "30px",
+      borderRadius: "16px",
+      background: "white",
+      width: "350px",
+      textAlign: "center",
+    },
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.6)",
+      zIndex: 1000,
+    },
+  }}
+      >
+        <h2 className="font-bold text-lg mb-4">😉Feature Coming Soon</h2>
+        <p className="text-gray-600 mb-6">The heatmap feature will be available in a future update.</p>
+        <button
+          onClick={() => setShowModal(false)}
+          className="px-4 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition cursor-pointer"
+        >
+          Close
+        </button>
+      </Modal>
     </div>
   )
 }

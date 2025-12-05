@@ -9,25 +9,24 @@ import {
   createColumnHelper,
   SortingState,
 } from "@tanstack/react-table";
-import { FaLongArrowAltLeft } from "react-icons/fa";
-import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaLongArrowAltLeft, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { FiClock, FiUser, FiExternalLink } from "react-icons/fi";
 import { MdCallToAction } from "react-icons/md";
 import { CiGlobe } from "react-icons/ci";
 import Activity from "./Activity";
-import { IoBarChartOutline } from "react-icons/io5";
+import { FaLocationDot } from "react-icons/fa6";
 type Events = {
   type: string;
   timestamp: string;
   sessionId: string;
   userAgent?: string;
   referrer?: string;
-  payload?: { scrollDepth?: number; eventType?: string };
+  payload?: { scrollDepth?: number; eventType?: string; location?: any };
 };
 
 type TableProps = {
   events: Events[];
-  decrement :  () => void;
+  decrement: () => void;
 };
 
 // Parse browser
@@ -40,13 +39,11 @@ function parseBrowser(userAgent?: string) {
   return "Unknown";
 }
 
-const Table = ({ events,decrement }: TableProps) => {
-
+const Table = ({ events, decrement }: TableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-
-  const [activity , setActivity] = useState(1)
-const [data , setData] = useState<Events[]>([])
-const [session, setSession] = useState<string>("")
+  const [activity, setActivity] = useState(1);
+  const [data, setData] = useState<Events[]>([]);
+  const [session, setSession] = useState<string>("");
 
   const sessionRows = useMemo(() => {
     const map = new Map<string, Events>();
@@ -61,14 +58,16 @@ const [session, setSession] = useState<string>("")
   const columnHelper = createColumnHelper<any>();
 
   const columns = [
+    // S/N
     columnHelper.display({
       id: "sn",
-    header: () => <div className="font-figtree">S/N</div>,
+      header: () => <div className="font-figtree">S/N</div>,
       cell: (info) => (
-        <span className="font-semibold font-figtree  text-gray-700">{info.row.index + 1}</span>
+        <span className="font-semibold font-figtree text-gray-700">{info.row.index + 1}</span>
       ),
     }),
 
+    // Session ID
     columnHelper.accessor("sessionId", {
       header: () => (
         <div className="flex items-center gap-2 font-figtree">
@@ -76,13 +75,10 @@ const [session, setSession] = useState<string>("")
           Session ID
         </div>
       ),
-          cell: (info) => (
-    <div className="font-figtree text-gray-700">
-      {info.getValue()}
-    </div>
-  ),
+      cell: (info) => <div className="font-figtree text-gray-700">{info.getValue()}</div>,
     }),
 
+    // Date Visited
     columnHelper.accessor("timestamp", {
       header: ({ column }) => (
         <div
@@ -91,8 +87,6 @@ const [session, setSession] = useState<string>("")
         >
           <FiClock className="text-purple-600" />
           <span className="font-figtree">Date Visited</span>
-
-          {/* Sorting icons */}
           {column.getIsSorted() === "asc" && <FaSortUp className="text-purple-600" />}
           {column.getIsSorted() === "desc" && <FaSortDown className="text-purple-600" />}
           {!column.getIsSorted() && <FaSort className="text-gray-400" />}
@@ -106,132 +100,154 @@ const [session, setSession] = useState<string>("")
       ),
     }),
 
+    // Referrer
     columnHelper.accessor("referrer", {
-     header: () => (
-    <div className="font-figtree">
-      Referrer
-    </div>
-  ),
-    cell: (info) => (
-  <div className="font-figtree">
-    {info.getValue() || "None"}
-  </div>
-),
+      header: () => <div className="font-figtree">Referrer</div>,
+      cell: (info) => <div className="font-figtree">{info.getValue() || "None"}</div>,
     }),
 
+    // Browser
     columnHelper.accessor("userAgent", {
       header: () => (
         <div className="flex items-center gap-2 font-figtree">
-            <CiGlobe size={15} className="text-purple-500 " />
+          <CiGlobe size={15} className="text-purple-500" />
           Browser
-          
         </div>
       ),
-      cell: (info) =>   <div className="font-figtree">
-    {parseBrowser(info.getValue())}
-  </div>
+      cell: (info) => <div className="font-figtree">{parseBrowser(info.getValue())}</div>,
     }),
 
-   columnHelper.display({
-  id: "action",
-  header: () => (
-    <div className="flex items-center gap-2 font-figtree">
-      <MdCallToAction className="text-blue-400" />
-      Action
-    </div>
-  ),
-  cell: (info) => {
-    const sessionId = info.row.original.sessionId;
+    // Location
+    columnHelper.display({
+      id: "location",
+      header: () => (
+        <div className="flex items-center gap-2 font-figtree">
+          <FaLocationDot className="text-purple-600" />
+          Location
+        </div>
+      ),
+      cell: (info) => {
+        // For this session row, find first event with location
+        const eventsForSession = events.filter(
+          (e) => e.sessionId === info.row.original.sessionId
+        );
+        const firstWithLocation = eventsForSession.find((e) => e.payload?.location)
+          ?.payload?.location;
 
-    return (
-      <button
-        onClick={() => handleViewMore(sessionId)}
-        className="px-3 py-1 font-mono font-bold
+        if (!firstWithLocation)
+          return <span className="font-figtree text-gray-700">Unknown</span>;
+
+        const city = firstWithLocation.city;
+        const country = firstWithLocation.country_name;
+
+        return (
+          <span className="font-figtree text-gray-700">
+            {city && country ? `${city}, ${country}` : city || country || "Unknown"}
+          </span>
+        );
+      },
+    }),
+
+    // Action
+    columnHelper.display({
+      id: "action",
+      header: () => (
+        <div className="flex items-center gap-2 font-figtree">
+          <MdCallToAction className="text-blue-400" />
+          Action
+        </div>
+      ),
+      cell: (info) => {
+        const sessionId = info.row.original.sessionId;
+        return (
+          <button
+            onClick={() => handleViewMore(sessionId)}
+            className="px-3 py-1 font-mono font-bold
         bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
         shadow-md text-white rounded-lg hover:bg-blue-600 text-sm flex items-center gap-1 cursor-pointer"
-      >
-        View More <FiExternalLink />
-      </button>
-    );
-  },
-}),
-
+          >
+            View More <FiExternalLink />
+          </button>
+        );
+      },
+    }),
   ];
 
   const table = useReactTable({
     data: sessionRows,
     columns,
     state: { sorting },
-    onSortingChange: setSorting, // ✅ properly typed
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
+  const handleViewMore = (sessionId: string) => {
+    const relatedEvents = events.filter((e) => e.sessionId === sessionId);
+    console.log("All events for session:", sessionId, relatedEvents);
+    setSession(sessionId);
+    setData(relatedEvents);
+    setActivity((prev) => prev + 1);
+  };
 
-
-const handleViewMore = (sessionId: string) => {
-  const relatedEvents = events.filter(e => e.sessionId === sessionId);
-  console.log("All events for session:", sessionId, relatedEvents);
-setSession(sessionId);
-  setData(relatedEvents);
-   setActivity((prev) => prev + 1)
-};
-
-const Back = () => {
+  const Back = () => {
     setActivity((prev) => prev - 1);
   };
 
   return (
-<>
-{ activity == 1 ?
-<>
-<FaLongArrowAltLeft size={25} className="mb-6 ml-4 cursor-pointer" onClick={decrement}/>
-    <div className="p-5 bg-white rounded-2xl shadow-md border border-gray-200">
-      <h2 className="text-xl font-bold mb-4 text-gray-800 font-figtree">Session Activity</h2>
+    <>
+      {activity === 1 && (
+        <>
+          <FaLongArrowAltLeft
+            size={25}
+            className="mb-6 ml-4 cursor-pointer"
+            onClick={decrement}
+          />
+          <div className="p-5 bg-white rounded-2xl shadow-md border border-gray-200">
+            <h2 className="text-xl font-bold mb-4 text-gray-800 font-figtree">
+              Session Activity
+            </h2>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse">
-          <thead className="bg-gray-100 text-gray-700 border-b">
-            {table.getHeaderGroups().map((hg) => (
-              <tr key={hg.id}>
-                {hg.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="p-3 text-left font-semibold uppercase tracking-wide text-sm"
-                  >
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-collapse">
+                <thead className="bg-gray-100 text-gray-700 border-b">
+                  {table.getHeaderGroups().map((hg) => (
+                    <tr key={hg.id}>
+                      {hg.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          className="p-3 text-left font-semibold uppercase tracking-wide text-sm"
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
 
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="border-b hover:bg-gray-50 transition">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-3 text-gray-800">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                <tbody>
+                  {table.getRowModel().rows.map((row) => (
+                    <tr key={row.id} className="border-b hover:bg-gray-50 transition">
+                      {row.getVisibleCells().map((cell) => (
+                        <td key={cell.id} className="p-3 text-gray-800">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-      {sessionRows.length === 0 && (
-        <p className="text-center py-6 text-gray-500">No activity yet.</p>
+            {sessionRows.length === 0 && (
+              <p className="text-center py-6 text-gray-500">No activity yet.</p>
+            )}
+          </div>
+        </>
       )}
-    </div>
-</>
-: ''}
-{
-  activity == 2 ?
-<Activity dataa={data} Back={Back} session={session} />
-  : ''
-}
-</>
+
+      {activity === 2 && <Activity dataa={data} Back={Back} session={session} />}
+    </>
   );
 };
 

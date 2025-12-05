@@ -15,7 +15,8 @@ import { supabase } from '../lib/supaBaseClient'
 import { ClipLoader } from "react-spinners";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/userProfile";
-
+import Modal from 'react-modal';
+import { PulseLoader } from "react-spinners";
 interface FormFields {
   name: string;
   username: string;
@@ -39,7 +40,10 @@ export default function Home() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false); // ⬅ loading state
-
+ const [forgotModalOpen, setForgotModalOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSuccess, setForgotSuccess] = useState(false);
   const validateField = (field: keyof FormFields, value: string): string | undefined => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
@@ -205,6 +209,31 @@ const router = useRouter();
     },
   };
 
+    const handleForgotPassword = async () => {
+    if (!forgotEmail) {
+      alert("Please enter your email.");
+      return;
+    }
+
+    try {
+      setForgotLoading(true);
+      const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      setForgotLoading(false);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      setForgotSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setForgotLoading(false);
+      alert("Unexpected error occurred.");
+    }
+  };
   return (
     <div
       className="flex flex-col z-10 gap-1 min-h-screen bg-cover bg-center bg-no-repeat"
@@ -244,8 +273,8 @@ const router = useRouter();
                   <h3 className="text-black font-figtree font-bold text-[20px]">
                     Sign in with email
                   </h3>
-                  <h4 className="text-gray-500 font-figtree font-semibold text-[16px]">
-                    Turn raw website activity into actionable insights.
+                  <h4 className="bg-linear-to-r from-blue-500 via-violet-500 to-pink-500 bg-clip-text text-transparent font-figtree font-bold text-[16px]">
+                    Turn your raw website activity into actionable insights.
                   </h4>
                 </div>
 
@@ -282,7 +311,9 @@ const router = useRouter();
                     <IoMdEye size={20} color="black" className="ml-auto mr-2" />
                   </div>
                   
-                  <h4 className="text-black font-figtree font-semibold text-[15px] ml-auto mt-2">
+                  <h4 className="text-black font-figtree font-semibold text-[15px] ml-auto mt-2 cursor-pointer"
+                    onClick={() => setForgotModalOpen(true)}
+                  >
                     Forgot Password?
                   </h4>
                 </div>
@@ -433,6 +464,61 @@ const router = useRouter();
           </AnimatePresence>
         </div>
       </div>
+         <Modal
+        isOpen={forgotModalOpen}
+        onRequestClose={() => { setForgotModalOpen(false); setForgotSuccess(false); }}
+       style={{
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      transform: "translate(-50%, -50%)",
+      padding: "30px",
+      borderRadius: "16px",
+      background: "white",
+      width: "350px",
+      textAlign: "center",
+    },
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.6)",
+      zIndex: 1000,
+    },
+  }}
+        ariaHideApp={false}
+      >
+        {!forgotSuccess ? (
+          <>
+            <h2 className="text-xl font-bold mb-4">Reset Password</h2>
+            <p className="mb-2">Enter your email to receive a password reset link.</p>
+            <input
+              type="email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              className="border p-2 w-full rounded-xl bg-gray-300 mb-4 outline-none"
+              placeholder="Your email"
+            />
+            <button
+              className="bg-black text-white px-4 py-2 rounded-2xl w-full cursor-pointer flex justify-center"
+              onClick={handleForgotPassword}
+              disabled={forgotLoading}
+            >
+              {forgotLoading ? <PulseLoader size={8} color="#fff" /> : "Send"}
+            </button>
+          </>
+        ) : (
+          <div className="text-center">
+            <h2 className="text-xl font-bold mb-4">Email Sent!</h2>
+            <p>Check your inbox for the password reset link.</p>
+            <button
+              className="mt-4 bg-black text-white px-4 py-2 rounded-2xl cursor-pointer"
+              onClick={() => { setForgotModalOpen(false); setForgotSuccess(false); setForgotEmail(""); }}
+            >
+              Close
+            </button>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

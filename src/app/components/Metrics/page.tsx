@@ -42,7 +42,9 @@ import Table from "./table";
 import { useRef } from "react";
 import { useGenerateImage } from "recharts-to-png"
 import domtoimage from "dom-to-image-more";
-
+import { FaRegLightbulb } from "react-icons/fa"
+import { TbBulbFilled } from "react-icons/tb";
+;
 
 type Events = {
   type: string;
@@ -80,8 +82,15 @@ function parseBrowser(userAgent?: string) {
 export default function AnalyticsDashboard() {
 
  const [domtoimage, setDomToImage] = useState<any>(null);
+const [showNotice, setShowNotice] = useState(false);
 
-  // Dynamically import on client only
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNotice(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     import("dom-to-image-more").then((mod) => setDomToImage(mod));
   }, []);
@@ -142,7 +151,7 @@ export default function AnalyticsDashboard() {
   const sidebarItems = [
   { name: "Activity", icon: <FaRegChartBar /> },
   { name: "Profile", icon: <FaUser /> },
-  { name: "AI", icon: <FaRobot /> },
+  { name: "AI assistant", icon: <FaRobot /> },
 ];
 
  const {  feedback } = useProfileStore();
@@ -175,21 +184,25 @@ useEffect(() => {
 
   // Track cumulative unique session IDs
   const seenSessions = new Set<string>();
-  const dailyUsersMap = new Map<string, number>();
-
+ const dailyUsersMap = new Map<string, { count: number; sessions: string[] }>();
   filteredEvents.forEach((e) => {
     const dateStr = new Date(e.timestamp).toLocaleDateString();
-    seenSessions.add(e.sessionId); // add to cumulative set
-    dailyUsersMap.set(dateStr, seenSessions.size); // cumulative count up to this date
+    seenSessions.add(e.sessionId);
+    const existing = dailyUsersMap.get(dateStr) || { count: 0, sessions: [] };
+    dailyUsersMap.set(dateStr, {
+      count: seenSessions.size,
+      sessions: [...new Set([...existing.sessions, e.sessionId])], // add sessionId
+    });
   });
 
   // Convert to array for Recharts
-  const data = Array.from(dailyUsersMap.entries())
-    .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
-    .map(([date, users]) => ({
-      date,
-      users,
-    }));
+const data = Array.from(dailyUsersMap.entries())
+  .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+  .map(([date, { count, sessions }]) => ({
+    date,
+    users: count,
+    sessions, // include session IDs
+  }));
 
   setChartData(data);
 }, [allEvents, timeRange]);
@@ -207,6 +220,38 @@ const handleExportPNG = async () => {
 };
   return (
     <div className="flex h-screen overflow-hidden bg-gray-200">
+
+ <div
+        className={`
+          fixed top-0 left-1/2 transform -translate-x-1/2 
+          w-full max-w-xl 
+          bg-purple-700 text-white rounded-b-3xl shadow-lg
+          px-6 py-4 flex items-start justify-between gap-4
+          transition-all duration-500 ease-in-out
+          ${showNotice ? "translate-y-0 opacity-100" : "-translate-y-32 opacity-0"}
+          z-50
+        `}
+      >
+        <div className="flex items-center gap-2">
+         
+          <div>
+            <div className="flex items center gap-1">
+               <TbBulbFilled className="text-yellow-400 w-6 h-6" />
+            <h3 className="font-bold text-lg">Important Notice!</h3>
+            </div>
+            <p className="text-sm">
+              The Maximum number of sessions that can be recorded for now is <strong>10</strong>. Please clear user sessions when the limit is reached.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => setShowNotice(false)}
+          className="text-white hover:text-gray-300 transition"
+        >
+          <IoClose size={24} className="cursor-pointer" />
+        </button>
+      </div>
+
       {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full bg-linear-to-b from-blue-600 via-purple-600 to-violet-700 text-white w-64 p-4 flex flex-col transform transition-transform duration-300 z-50
@@ -286,7 +331,7 @@ alt="logo"
         overflow-y-auto
       "
     >
-      <h2 className="text-2xl font-bold text-gray-900 mb-4 ">
+      <h2 className="text-2xl font-bold text-gray-700 mb-4 ">
         {feedback} Report
       </h2>
 
@@ -332,11 +377,11 @@ alt="logo"
     <h3 className="text-xl font-bold text-gray-900">Visitor Trend</h3>
     <div className =" flex items-center gap-2">
     <select
-      className="border border-gray-300 rounded-xl px-3 py-1 cursor-pointer"
+      className="bg-purple-600 text-white  bg rounded-xl px-3  py-1 cursor-pointer"
       value={timeRange}
       onChange={(e) => setTimeRange(e.target.value as any)}
     >
-      <option value="all" className="cursor-pointer">From First User</option>
+      <option value="all" className="cursor-pointer ">From First User</option>
       <option value="7" className="cursor-pointer">Last 7 Days</option>
       <option value="3" className="cursor-pointer">Last 3 Days</option>
       <option value="1" className="cursor-pointer">Last 1 Day</option>
@@ -355,7 +400,23 @@ alt="logo"
       <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
       <XAxis dataKey="date" />
       <YAxis allowDecimals={false} />
-      <Tooltip />
+    <Tooltip
+  content={({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white p-2 rounded shadow border border-gray-200 text-sm">
+          <p className="font-bold">{label}</p>
+          <p className="text-gray-600 break-all">
+            Session IDs: {data.sessions.join(", ")}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  }}
+/>
+
       <Line
         type="monotone"
         dataKey="users"
@@ -397,8 +458,8 @@ alt="logo"
 
         {activePage === "AI" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">AI Page</h2>
-            <p className="text-lg text-gray-700">This is the AI view content.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Fature coming soon</h2>
+            <p className="text-lg text-gray-700">The Ai assistant will be ready soon</p>
           </div>
         )}
 

@@ -12,10 +12,12 @@ import { IoMdCheckmark } from "react-icons/io";
 import { MdDeleteForever } from "react-icons/md";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { supabase } from "@/lib/supaBaseClient";
+import Modal from "react-modal";
 
 import { useRouter } from "next/navigation";
 export default function DashboardPage() {
   const { profile, users, setLink, setFeedback, link, feedback } = useProfileStore();
+Modal.setAppElement("body");
 
   const [projectName, setProjectName] = useState("");
   const [domain, setDomain] = useState("");
@@ -27,7 +29,7 @@ const [copied, setCopied] = useState(false);
  const [snippet, setSnippet] = useState("");
 const [site, setSite] = useState("");
 const [prof, setProf] = useState("");
- 
+ const [noEventsModal, setNoEventsModal] = useState(false);
 const navigate = useRouter()
   
  useEffect(() => {
@@ -155,8 +157,9 @@ console.log('this is data', data)
       setLoading(false);
     }
   }
-
 async function viewMetrics() {
+  setLoading(true); // <-- Show loader immediately
+
   try {
     const {
       data: { user: authUser },
@@ -165,30 +168,33 @@ async function viewMetrics() {
 
     if (authError || !authUser) {
       console.log("User not authenticated.");
+      setLoading(false);
       return;
     }
 
-    // Fetch a single project for this user
+    // Fetch the user's project
     const { data: project, error: projectError } = await supabase
       .from("projects")
       .select("*")
       .eq("user_id", authUser.id)
-      .maybeSingle(); // returns one object or null
+      .maybeSingle();
 
     if (projectError) {
       console.log("Could not fetch project:", projectError.message);
+      setLoading(false);
       return;
     }
 
     if (!project) {
       console.log("No project found for this user.");
+      setLoading(false);
       return;
     }
 
-    // Set the project.id in Zustand global state
-    console.log(project)
-setLink(project.id || "");
-   console.log('this is link from dashboard', link)
+    // Save project ID globally
+    setLink(project.id || "");
+
+    // Fetch events for this project
     const { data: events, error: eventsError } = await supabase
       .from("events")
       .select("*")
@@ -196,18 +202,29 @@ setLink(project.id || "");
 
     if (eventsError) {
       console.log("Error fetching events:", eventsError.message);
+      setLoading(false);
       return;
     }
 
+    // If no events → stop loader → show modal
     if (!events || events.length === 0) {
       console.log("No events yet.");
+      setLoading(false);
+
+      // delay 300ms so loader fades first
+      setTimeout(() => {
+        setNoEventsModal(true);
+      }, 300);
+
       return;
     }
-    console.log("Events found:", events);
-    navigate.push('/components/Metrics')
-    console.log(link)
+
+    // Otherwise → redirect normally
+    navigate.push("/components/Metrics");
+    setLoading(false);
   } catch (err) {
     console.log("Unexpected error:", err);
+    setLoading(false);
   }
 }
 
@@ -217,12 +234,12 @@ setLink(project.id || "");
     <main className={`relative min-h-screen flex flex-col  bg-no-repeat bg-cover bg-bottom-left ${ !snippet ? " justify-center items-center  " : ""}`}
       style={{ backgroundImage: "url('/dashboardbg2.jpg')" }}
     >
-   
-      {loading && (
-        <div className="absolute inset-0 bg-opacity-70 flex items-center justify-center z-50">
-          <PulseLoader  color="blue" size={15} />
-        </div>
-      )}
+{loading && (
+  <div className="fixed inset-0  bg-opacity-70 backdrop-blur-md flex items-center justify-center z-50">
+    <PulseLoader color="blue" size={15} />
+  </div>
+)}
+
 
       {snippet ? (
         <div className="relative p-8">
@@ -395,6 +412,43 @@ setLink(project.id || "");
           </AnimatePresence>
         </div>
       )}
+      <Modal
+  isOpen={noEventsModal}
+  onRequestClose={() => setNoEventsModal(false)}
+  style={{
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      transform: "translate(-50%, -50%)",
+      padding: "30px",
+      borderRadius: "16px",
+      background: "white",
+      width: "350px",
+      textAlign: "center",
+    },
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.6)",
+      zIndex: 1000,
+    },
+  }}
+>
+  <h2 className="text-black font-semibold text-lg mb-3">
+    😅No Data Available
+  </h2>
+  <p className="text-gray-600 font-medium mb-6">
+    There are no events yet to display metrics for.
+  </p>
+
+  <button
+    onClick={() => setNoEventsModal(false)}
+    className="bg-black text-white px-4 py-2 rounded-xl font-semibold cursor-pointer"
+  >
+    Okay
+  </button>
+</Modal>
+
     </main>
   );
 }
