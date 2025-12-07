@@ -44,7 +44,7 @@ import { useGenerateImage } from "recharts-to-png"
 import domtoimage from "dom-to-image-more";
 import { FaRegLightbulb } from "react-icons/fa"
 import { TbBulbFilled } from "react-icons/tb";
-;
+import Modal from 'react-modal';
 
 type Events = {
   type: string;
@@ -100,43 +100,55 @@ const [showNotice, setShowNotice] = useState(false);
  const [step, setStep] = useState(1);
   const [activePage, setActivePage] = useState("Activity");
  const [open, setOpen] = useState(false);
+const [showSessionLimit, setShowSessionLimit] = useState(false);
+const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+const [isClearing, setIsClearing] = useState(false);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!link) return;
 
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .eq("project_id", link);
 
-      if (error) {
-        console.log("Error fetching events:", error);
-        return;
-      }
-      const flattenedEvents: Events[] = data?.flatMap((item: any) =>
-        item.events.map((e: any) => ({
-          type: e.type,
-          timestamp: e.timestamp,
-          sessionId: e.sessionId ?? item.session_id,
-          userAgent: e.userAgent,
-          payload: e.payload,
-        }))
-      ) || [];
 
-      setEvents(flattenedEvents);
-    };
-    fetchEvents();
-  }, [link]);
+ useEffect(() => {
+  const fetchEvents = async () => {
+    if (!link) return;
+
+    const { data, error } = await supabase
+      .from("events")
+      .select("*")
+      .eq("project_id", link);
+
+    if (error) {
+      console.log("Error fetching events:", error);
+      return;
+    }
+
+    const flattenedEvents: Events[] = data?.flatMap((item: any) =>
+      item.events.map((e: any) => ({
+        type: e.type,
+        timestamp: e.timestamp,
+        sessionId: e.sessionId ?? item.session_id,
+        userAgent: e.userAgent,
+        payload: e.payload,
+      }))
+    ) || [];
+
+    setEvents(flattenedEvents);
+
+    // NEW: check session count
+    const uniqueIds = new Set(
+      flattenedEvents.map((e) => e.sessionId)
+    );
+
+    if (uniqueIds.size >=10) {
+      setShowSessionLimit(true);
+    }
+  };
+
+  fetchEvents();
+}, [link]);
+
 
   const allEvents = useMemo(() => events, [events]);
 
-  const scrollData = allEvents
-    .filter((e) => e.type === "scroll")
-    .map((e) => ({
-      depth: e.payload?.scrollDepth ?? 0,
-      time: e.timestamp,
-    }));
 
 
   const uniqueVisitorsSet = new Map<string, string>();
@@ -218,6 +230,31 @@ const handleExportPNG = async () => {
   link.download = "visitor-trend.png";
   link.click();
 };
+
+const clearEventData = async () => {
+  if (!link) return;
+
+  setIsClearing(true);
+
+  const { error } = await supabase
+    .from("events")
+    .delete()
+    .eq("project_id", link);
+
+  setIsClearing(false);
+
+  if (error) {
+    console.log("Error clearing events:", error);
+    return;
+  }
+
+  // Wipe UI
+  setEvents([]);
+  setShowSessionLimit(false);
+  setIsClearModalOpen(false);
+};
+ 
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-200">
 
@@ -240,7 +277,7 @@ const handleExportPNG = async () => {
             <h3 className="font-bold text-lg">Important Notice!</h3>
             </div>
             <p className="text-sm">
-              The Maximum number of sessions that can be recorded for now is <strong>10</strong>. Please clear user sessions when the limit is reached.
+              The Maximum number of sessions that can be recorded per time for now is <strong>10</strong>. Please clear user sessions when the limit is reached to receive fresh analytics.
             </p>
           </div>
         </div>
@@ -331,10 +368,26 @@ alt="logo"
         overflow-y-auto
       "
     >
+      <div className="flex lg:flex-row flex-col lg:items-center lg:justify-between">
       <h2 className="text-2xl font-bold text-gray-700 mb-4 ">
         {feedback} Report
       </h2>
+      {showSessionLimit && (
+  <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 mb-4 rounded-xl">
+    <p className="text-sm font-semibold">
+      Session limit reached (10). Please clear your session record to receive new data.
+    </p>
 
+    <button
+      onClick={() => setIsClearModalOpen(true)}
+      className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
+    >
+      Clear
+    </button>
+  </div>
+)}
+
+</div>
       <div className="space-y-5">
         {/* Visitors */}
         <p className="text-lg font-semibold text-gray-700 font-figtree">
@@ -351,12 +404,13 @@ alt="logo"
               : "No visitors yet"}
           </span>{" "}
           is{" "}
-          <span className=" text-2xl text-purple-600 font-bold">
+          <span className=" text-[20px] lg:text-2xl text-purple-600 font-bold">
             {uniqueVisitors}
           </span>
+          <br></br><span className=" text-[12px] flex items-center justify-center font-bold text-blue-600 font-figtree">(latter date is the date the last visitor visited the site)</span>
         </p>
 
-        {/* First Visitor Date */}
+        
         <button
           className="px-4 py-3 rounded-3xl 
           bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
@@ -471,6 +525,51 @@ alt="logo"
         )}
 
       </div>
+      <Modal
+  isOpen={isClearModalOpen}
+  onRequestClose={() => setIsClearModalOpen(false)}
+ style={{
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      transform: "translate(-50%, -50%)",
+      padding: "30px",
+      borderRadius: "16px",
+      background: "white",
+      width: "350px",
+      textAlign: "center",
+    },
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.6)",
+      zIndex: 1000,
+    },
+  }}
+  ariaHideApp={false}
+>
+  <h2 className="text-xl font-bold text-gray-800 mb-3">Clear Event Data?</h2>
+  <p className="text-gray-600 mb-6">
+    Clearing your event data will allow you to receive fresh analytics.
+  </p>
+
+  <div className="flex justify-end gap-3">
+    <button
+      onClick={() => setIsClearModalOpen(false)}
+      className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 cursor-pointer"
+    >
+      Cancel
+    </button>
+
+    <button
+      onClick={clearEventData}
+      className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+    >
+      {isClearing ? "Clearing..." : "Clear Data"}
+    </button>
+  </div>
+</Modal>
     </div>
+
   );
 }

@@ -203,7 +203,7 @@ const Table = ({ events, decrement }: TableProps) => {
             className="mb-6 ml-4 cursor-pointer"
             onClick={decrement}
           />
-          <div className="p-5 bg-white rounded-2xl shadow-md border border-gray-200">
+          <div className="p-5 bg-white rounded-2xl shadow-md border border-gray-200 ">
             <h2 className="text-xl font-bold mb-4 text-gray-800 font-figtree">
               Session Activity
             </h2>

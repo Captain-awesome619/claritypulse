@@ -112,24 +112,24 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
    <h4 className='font-thin font-figtree text-[15px] text-purple-600 '>User {""}-  {session}</h4>
     </div>
         <button
-              className="px-4 py-3 rounded-3xl 
+              className="lg:px-4 lg:py-3 px-1 py-3 rounded-3xl 
               bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
-              shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center gap-2"
+              shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center lg:gap-2 gap-2"
               onClick={() => setShowModal(true)}
             >
               <div>
-                <FaMap size={15} color="white" />
+                <FaMap color="white" className='text-[12px] lg:text-[14px]' />
               </div>
-              <h4 className=" text-white font-mono font-bold">View Heatmap</h4>
+              <h4 className=" text-white font-mono font-bold text-[12px] lg:text-[13px] ">View Heatmap</h4>
             </button>
     </div>
-      <div className='grid grid-cols-3 place-items-center gap-6'>
+      <div className='grid grid-cols-2 lg:grid-cols-3 place-items-center gap-6'>
       {/* CARDS */}
       
        
 
         
-          <div className="w-60 h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+          <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <Text className="font-figtree font-semibold text-gray-700 text-sm">
@@ -140,7 +140,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-3xl text-purple-600">
+    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
       {mouseCount}
     </Metric>
   </div>
@@ -148,7 +148,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
 
       
-          <div className="w-60 h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+          <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <Text className="font-figtree font-semibold text-gray-700 text-sm">
@@ -158,14 +158,14 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
   </div>
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-3xl text-purple-600">
+    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
       {mouseCount}{avgScroll.toFixed(1)}
     </Metric>
   </div>
 </div>
 
 
-          <div className="w-60 h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+          <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <Text className="font-figtree font-semibold text-gray-700 text-sm">
@@ -176,7 +176,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-3xl text-purple-600">
+    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
       {count}
     </Metric>
   </div>
@@ -185,7 +185,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
 
         
-         <div className="w-60 h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+         <div className="lg:w-60 lg:h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <Text className="font-figtree font-semibold text-gray-700 text-sm">
@@ -196,8 +196,8 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-3xl text-purple-600">
-      {displayDuration} 
+    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+      {displayDuration  } 
     </Metric>
   </div>
    <div className="flex justify-end ite">
@@ -214,7 +214,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
       </div>
       <div className='flex flex-col gap-4 mt-8'>
       <h3 className="font-figtree font-bold text-gray-700 text-[25px] ml-4 underline underline-offset-2 "> Charts</h3>
-      <div  className='grid grid-cols-2 place-items-center gap-6' > 
+      <div  className='grid lg:grid-cols-2 place-items-center gap-6' > 
  <Card>
           <Title className='text-sm font-figtree font-semibold text-gray-700'>Scroll Depth Over Time</Title>
           <Text className='text-sm font-figtree font-semibold text-gray-700'>Tracks how deep users scroll</Text>

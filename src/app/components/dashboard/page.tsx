@@ -30,6 +30,8 @@ const [copied, setCopied] = useState(false);
 const [site, setSite] = useState("");
 const [prof, setProf] = useState("");
  const [noEventsModal, setNoEventsModal] = useState(false);
+ const [deleteModal, setDeleteModal] = useState(false);
+const [deleting, setDeleting] = useState(false);
 const navigate = useRouter()
   
  useEffect(() => {
@@ -228,10 +230,61 @@ async function viewMetrics() {
   }
 }
 
+async function deleteProjectAndEvents() {
+  setDeleting(true);
+
+  try {
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+
+    if (!authUser) {
+      console.log("Not authenticated");
+      setDeleting(false);
+      return;
+    }
+
+    // Get project
+    const { data: project } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("user_id", authUser.id)
+      .maybeSingle();
+
+    if (!project) {
+      console.log("No project found");
+      setDeleting(false);
+      return;
+    }
+
+    // Delete events first (foreign key friendly)
+    await supabase
+      .from("events")
+      .delete()
+      .eq("project_id", project.id);
+
+    // Delete project
+    await supabase
+      .from("projects")
+      .delete()
+      .eq("id", project.id);
+
+    // Reset UI after delete
+    setSnippet("");
+    setSite("");
+    setFeedback("");
+    setLink("");
+    setDeleteModal(false);
+  } catch (err) {
+    console.log("Delete error:", err);
+  }
+
+  setDeleting(false);
+}
 
 
   return (
-    <main className={`relative min-h-screen flex flex-col  bg-no-repeat bg-cover bg-bottom-left ${ !snippet ? " justify-center items-center  " : ""}`}
+    <main className={`relative px-2 lg:px-0  h-screen w-screen flex flex-col  bg-no-repeat bg-cover bg-bottom-left ${ !snippet ? " justify-center items-center  " : ""}`}
       style={{ backgroundImage: "url('/dashboardbg2.jpg')" }}
     >
 {loading && (
@@ -242,14 +295,14 @@ async function viewMetrics() {
 
 
       {snippet ? (
-        <div className="relative p-8">
-        <div className="  w-[550px] h-[350px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
+        <div className="relative lg:p-8  ">
+        <div className="  lg:w-[550px] lg:h-[350px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
 <div className="flex flex-col p-4 gap-4">
-<h3 className="text-green-300  font-mono font-bold text-[18px]"> {feedback}</h3>
-<h3 className="text-green-300  font-mono font-bold text-[18px]"> {site}</h3>
+<h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {feedback}</h3>
+<h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {site}</h3>
 <div className=" flex flex-col gap-3">
 <div >
-<h3 className="bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold text-[18px]">
+<h3 className="bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px]">
   {snippet}
 </h3>
 
@@ -278,14 +331,14 @@ async function viewMetrics() {
     View metrics
   </button>
 
-<MdDeleteForever className="text-red-400 cursor-pointer" size={25} />
+<MdDeleteForever className="text-red-400 cursor-pointer" size={25}  onClick={() => setDeleteModal(true)}/>
 
 </div>
         </div>
         </div>
       ) : (
         <div
-          className={`relative w-[400px] mb-3 h-[500px] border-2 border-transparent rounded-3xl z-40 bg-cover bg-bottom-right bg-no-repeat lg:p-8
+          className={`relative px-2 w-[400px] mb-3 h-[500px] border-2 border-transparent rounded-3xl z-40 bg-cover bg-bottom-right bg-no-repeat lg:p-8
           shadow-[0_10px_10px_-10px_rgba(186,85,255,0.6),0_15px_20px_-1px_rgba(255,105,180,0.6),0_40px_90px_-20px_rgba(65,105,225,0.6)]
           overflow-hidden flex items-center justify-center transition-all duration-700 ease-in-out ${loading ? "opacity-50 pointer-events-none  " : ""}`}
           style={{ backgroundImage: "url('/landingbackground.svg')" }}
@@ -447,6 +500,55 @@ async function viewMetrics() {
   >
     Okay
   </button>
+</Modal>
+
+
+<Modal
+  isOpen={deleteModal}
+  onRequestClose={() => setDeleteModal(false)}
+  style={{
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      transform: "translate(-50%, -50%)",
+      padding: "30px",
+      borderRadius: "16px",
+      background: "white",
+      width: "350px",
+      textAlign: "center",
+    },
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.6)",
+      zIndex: 1000,
+    },
+  }}
+>
+  <h2 className="text-black font-semibold text-lg mb-3">
+    ⚠️ Delete Project?
+  </h2>
+
+  <p className="text-gray-600 font-medium mb-6">
+    This action cannot be undone. All events and your project will be deleted.
+  </p>
+
+  <div className="flex justify-between mt-6">
+    <button
+      onClick={() => setDeleteModal(false)}
+      className="px-4 py-2 rounded-xl font-semibold bg-gray-300 text-black cursor-pointer"
+    >
+      Cancel
+    </button>
+
+    <button
+      onClick={deleteProjectAndEvents}
+      className="px-4 py-2 rounded-xl font-semibold bg-red-500 text-white cursor-pointer"
+      disabled={deleting}
+    >
+      {deleting ? "Deleting..." : "Delete"}
+    </button>
+  </div>
 </Modal>
 
     </main>

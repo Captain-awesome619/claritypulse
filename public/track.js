@@ -33,9 +33,6 @@
     userLocation = loc;
   });
 
-  // ==========================================
-  // Load rrweb and start tracker
-  // ==========================================
   (() => {
     const rrwebScript = document.createElement("script");
     rrwebScript.src = "https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js";
@@ -80,9 +77,7 @@
           }).catch((err) => console.error("Failed to send events:", err));
         }
       };
-
       setInterval(flushEvents, flushInterval);
-
       const pushEvent = (type, data = {}) => {
         eventQueue.push({
           type,

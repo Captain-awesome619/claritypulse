@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"; 
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -21,12 +21,10 @@ export async function POST(req: Request) {
   try {
     const { apiKey, events } = await req.json();
 
-    // Validate
     if (!apiKey || !Array.isArray(events) || events.length === 0) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    // Verify project exists
     const { data: project, error: projectError } = await supabase
       .from("projects")
       .select("id")
@@ -37,18 +35,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid API key" }, { status: 401 });
     }
 
-    // ------------------------------------
-    // ✅ 1. Extract IP address from request
-    // ------------------------------------
     const forwardedFor =
       req.headers.get("x-forwarded-for") ||
       req.headers.get("x-real-ip") ||
       "";
     const ip = forwardedFor.split(",")[0].trim() || "0.0.0.0";
 
-    // ------------------------------------
-    // ✅ 2. Lookup location from IP
-    // ------------------------------------
     let location = null;
     try {
       const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
@@ -69,26 +61,45 @@ export async function POST(req: Request) {
       location = null;
     }
 
-    // ------------------------------------
-    // ✅ 3. Attach location to each event
-    // ------------------------------------
     const enhancedEvents = events.map((evt: TrackEvent) => ({
       ...evt,
-      location, // <-- added here
+      location,
     }));
 
-    // ------------------------------------
-    // All events share the same sessionId
-    // ------------------------------------
     const sessionId = events[0].sessionId;
 
-    // ------------------------------------
-    // ✅ Insert into Supabase
-    // ------------------------------------
+    // ----------------------------------------------------
+    // ✅ LIMIT CHECK — Max 10 unique session_ids per project
+   // Get all session_ids for this project
+const { data: sessionRows, error: sessionErr } = await supabase
+  .from("events")
+  .select("session_id")
+  .eq("project_id", project.id);
+
+if (sessionErr) {
+  console.error("Session check failed:", sessionErr);
+}
+
+// Get unique session IDs
+const sessionList = Array.from(new Set(sessionRows?.map(s => s.session_id) || []));
+
+// Check if current session is already known
+const alreadyKnown = sessionList.includes(sessionId);
+
+// Enforce max 10 sessions
+if (sessionList.length >= 10  && !alreadyKnown) {
+  return NextResponse.json({
+    message: "Session limit reached. Ignoring new session.",
+    allowed: false,
+  });
+}
+
+    // ----------------------------------------------------
+
     const { error } = await supabase.from("events").insert({
       project_id: project.id,
       session_id: sessionId,
-      events: enhancedEvents, // updated with location
+      events: enhancedEvents,
     });
 
     if (error) {
