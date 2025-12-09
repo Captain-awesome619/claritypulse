@@ -15,6 +15,7 @@ import { supabase } from "@/lib/supaBaseClient";
 import Modal from "react-modal";
 
 import { useRouter } from "next/navigation";
+
 export default function DashboardPage() {
   const { profile, users, setLink, setFeedback, link, feedback } = useProfileStore();
 Modal.setAppElement("body");
@@ -221,7 +222,7 @@ async function viewMetrics() {
       return;
     }
 
-    // Otherwise → redirect normally
+   
     navigate.push("/components/Metrics");
     setLoading(false);
   } catch (err) {
@@ -322,7 +323,7 @@ async function deleteProjectAndEvents() {
     </button>
 </div>
 <h3 className="text-green-300 font-mono font-bold">
-  Paste the script above into the {'<Head> or <body>'} section of your code.
+  Paste the script above into the {'<Head> , <body> or parent tag '} section of your code.
 </h3>
 </div>
 </div>

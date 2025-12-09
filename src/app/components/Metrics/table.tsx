@@ -86,7 +86,7 @@ const Table = ({ events, decrement }: TableProps) => {
           onClick={() => column.toggleSorting()}
         >
           <FiClock className="text-purple-600" />
-          <span className="font-figtree">Date Visited</span>
+          <span className="font-figtree"> Last Date Visited</span>
           {column.getIsSorted() === "asc" && <FaSortUp className="text-purple-600" />}
           {column.getIsSorted() === "desc" && <FaSortDown className="text-purple-600" />}
           {!column.getIsSorted() && <FaSort className="text-gray-400" />}

@@ -2,33 +2,16 @@
 
 import { useMemo, useEffect, useState } from "react";
 import {
-  Card,
-  Title,
-  Text,
-  Grid,
-  Flex,
-  Metric,
-} from "@tremor/react";
-import {
   LineChart,
   Line,
   Tooltip,
   XAxis,
   YAxis,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   CartesianGrid,
-  PieChart,
-  Pie,
-  Cell,
+  
 } from "recharts";
-import {
-  MousePointerClick,
-  ScrollText,
-  Timer,
-  Users,
-} from "lucide-react";
+import Settings from "./settings";
 import { useProfileStore } from "@/store/userProfile";
 import { supabase } from "@/lib/supaBaseClient";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -45,7 +28,7 @@ import domtoimage from "dom-to-image-more";
 import { FaRegLightbulb } from "react-icons/fa"
 import { TbBulbFilled } from "react-icons/tb";
 import Modal from 'react-modal';
-
+import Profile from "./profile";
 type Events = {
   type: string;
   timestamp: string;
@@ -163,7 +146,7 @@ const [isClearing, setIsClearing] = useState(false);
   const sidebarItems = [
   { name: "Activity", icon: <FaRegChartBar /> },
   { name: "Profile", icon: <FaUser /> },
-  { name: "AI assistant", icon: <FaRobot /> },
+  { name: "AI", icon: <FaRobot /> },
 ];
 
  const {  feedback } = useProfileStore();
@@ -505,22 +488,20 @@ alt="logo"
 
         {activePage === "Profile" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Profile Page</h2>
-            <p className="text-lg text-gray-700">This is the Profile view content.</p>
+           <Profile />
           </div>
         )}
 
         {activePage === "AI" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Fature coming soon</h2>
-            <p className="text-lg text-gray-700">The Ai assistant will be ready soon</p>
+            <p className="text-lg text-gray-700">The AI assistant will be ready soon</p>
           </div>
         )}
 
         {activePage === "Settings" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Settings Page</h2>
-            <p className="text-lg text-gray-700">This is the Settings view content.</p>
+          <Settings />
           </div>
         )}
 
