@@ -1,5 +1,5 @@
 (() => {
-  const TRACK_URL = "http://localhost:3000/api/track";
+  const TRACK_URL = "https://claritypulse.onrender.com/api/track";
 
   const currentScript = document.currentScript;
   const apiKey = currentScript ? currentScript.getAttribute("data-key") : null;

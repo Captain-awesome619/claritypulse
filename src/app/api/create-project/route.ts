@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 
-const SUPABASE_URL = "https://kvaoiwbayieglyyxjadj.supabase.co";
+const SUPABASE_URL =process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_ROLE =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2YW9pd2JheWllZ2x5eXhqYWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0NjEzNzMsImV4cCI6MjA3ODAzNzM3M30.fqKqpRsbFtd7pRzOVJVGSv8eDLqEy6myn8X3RrZEzmM";
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE, {
   auth: { persistSession: false },
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
 
     // Generate API key and snippet
     const apiKey = `ingest_${nanoid(24)}`;
-    const snippet = `<script async src="http://localhost:3000/track.js" data-key="${apiKey}"></script>`;
+    const snippet = `<script async src="https://claritypulse.onrender.com/track.js" data-key="${apiKey}"></script>`;
 
     // Insert project with snippet into database
     const { data: inserted, error: insertErr } = await supabaseAdmin

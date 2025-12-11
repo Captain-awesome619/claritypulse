@@ -485,7 +485,7 @@ alt="logo"
           <div>
             <MdOutlineBarChart size={15} color="white" />
           </div>
-          <h4 className=" text-white font-mono font-bold">View Activity</h4>
+          <h4 className=" text-white font-mono font-bold">View Table</h4>
         </button>
       </div>
     </div>

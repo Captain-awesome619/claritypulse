@@ -289,7 +289,7 @@ async function deleteProjectAndEvents() {
   return (
     <main className={`relative px-2 lg:px-0  h-screen w-screen flex flex-col  bg-no-repeat bg-cover bg-bottom-left ${ !snippet ? " justify-center items-center  " : ""}`}
       style={{ backgroundImage: "url('/dashboardbg2.jpg')" }}
-    >+
+    >
 {loading && (
   <div className="fixed inset-0  bg-opacity-70 backdrop-blur-md flex items-center justify-center z-50">
     <PulseLoader color="blue" size={15} />
@@ -341,7 +341,7 @@ async function deleteProjectAndEvents() {
         </div>
       ) : (
         <div
-          className={`relative px-2 w-[400px] mb-3 h-[500px] border-2 border-transparent rounded-3xl z-40 bg-cover bg-bottom-right bg-no-repeat lg:p-8
+          className={`relative px-2 w-[370px]  lg:w-[400px] mb-3 h-[500px] border-2 border-transparent rounded-3xl z-40 bg-cover bg-bottom-right bg-no-repeat lg:p-8
           shadow-[0_10px_10px_-10px_rgba(186,85,255,0.6),0_15px_20px_-1px_rgba(255,105,180,0.6),0_40px_90px_-20px_rgba(65,105,225,0.6)]
           overflow-hidden flex items-center justify-center transition-all duration-700 ease-in-out ${loading ? "opacity-50 pointer-events-none  " : ""}`}
           style={{ backgroundImage: "url('/landingbackground.svg')" }}
