@@ -242,14 +242,14 @@ const router = useRouter();
       style={{ backgroundImage: "url('/landingbackground.svg')" }}
     >
       {/* Logo */}
-      <div className="pl-[15%] pt-3">
-        <Image src={Logo} alt="ClarityPulse Logo" width={120} height={50} />
+      <div className="lg:pl-[15%] pl-[5%] pt-3">
+        <Image src={Logo} alt="ClarityPulse Logo" width={120} height={50} className="w-20 lg:w-30" />
       </div>
 
       {/* Card */}
       <div className="flex items-center justify-center overflow-hidden">
         <div
-          className="relative w-[400px] mb-3 min-h-[600px] h-auto border-2 border-transparent rounded-3xl z-40 bg-cover bg-bottom-right bg-no-repeat lg:p-12 
+          className="relative lg:w-[400px] w-[350px] mb-3 min-h-[600px] h-auto border-2 border-transparent rounded-3xl z-40 bg-cover bg-bottom-right bg-no-repeat lg:p-12 
           shadow-[0_10px_10px_-10px_rgba(186,85,255,0.6),0_15px_20px_-1px_rgba(255,105,180,0.6),0_40px_90px_-20px_rgba(65,105,225,0.6)] 
           flex flex-col items-center gap-4 overflow-hidden
           transition-all duration-700 ease-in-out hover:shadow-[0_10px_20px_-5px_rgba(30,144,255,0.8),0_20px_40px_-10px_rgba(65,105,225,0.7)]"
@@ -325,7 +325,7 @@ const router = useRouter();
                 <div className="mt-3 flex flex-col items-center">
                   <button
                     type="submit"
-                    className="w-90 h-12 cursor-pointer bg-black font-figtree font-semibold rounded-2xl text-white duration-500 ease-in-out hover:bg-white hover:text-black border-2 border-transparent hover:border-black flex items-center justify-center"
+                    className="lg:w-80  w-50 h-12 cursor-pointer bg-black font-figtree font-semibold rounded-2xl text-white duration-500 ease-in-out hover:bg-white hover:text-black border-2 border-transparent hover:border-black flex items-center justify-center"
                     disabled={loading}
                   >
                     {loading ? <ClipLoader size={20} color="#fff" /> : "Login"}
@@ -449,7 +449,7 @@ const router = useRouter();
                 <div className="mt-3 flex flex-col items-center">
                   <button
                     type="submit"
-                    className="w-90 h-12 cursor-pointer bg-black font-figtree font-semibold rounded-2xl text-white duration-500 ease-in-out hover:bg-white hover:text-black border-2 border-transparent hover:border-black flex items-center justify-center"
+                    className="lg:w-80  w-50 h-12 cursor-pointer bg-black font-figtree font-semibold rounded-2xl text-white duration-500 ease-in-out hover:bg-white hover:text-black border-2 border-transparent hover:border-black flex items-center justify-center"
                     disabled={loading}
                   >
                     {loading ? <ClipLoader size={20} color="#fff" /> : "Get Started"}
