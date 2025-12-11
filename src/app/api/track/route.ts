@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-  "https://kvaoiwbayieglyyxjadj.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt2YW9pd2JheWllZ2x5eXhqYWRqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjQ2MTM3MywiZXhwIjoyMDc4MDM3MzczfQ.2qraWqxnWPs7IbkEKJz-R9qeLvkeyh0y2FLsvw-n3ws"
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+process.env.SUPABASE_SERVICE_KEY!
 );
 
 interface TrackEvent {
@@ -19,9 +19,9 @@ interface TrackEvent {
 
 export async function POST(req: Request) {
   try {
-    const { apiKey, events } = await req.json();
+    const { apiKey, events, userId } = await req.json(); // <-- Receive userId from frontend
 
-    if (!apiKey || !Array.isArray(events) || events.length === 0) {
+    if (!apiKey || !userId || !Array.isArray(events) || events.length === 0) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
@@ -61,45 +61,53 @@ export async function POST(req: Request) {
       location = null;
     }
 
+    const sessionId = events[0].sessionId;
+
+    // ------------------------------
+    // LIMIT CHECK — Max 10 unique session_ids per project
+    const { data: sessionRows, error: sessionErr } = await supabase
+      .from("events")
+      .select("session_id")
+      .eq("project_id", project.id);
+
+    if (sessionErr) {
+      console.error("Session check failed:", sessionErr);
+    }
+
+    const sessionList = Array.from(new Set(sessionRows?.map(s => s.session_id) || []));
+    const alreadyKnownSession = sessionList.includes(sessionId);
+
+    if (sessionList.length >= 10 && !alreadyKnownSession) {
+      return NextResponse.json({
+        message: "Session limit reached. Ignoring new session.",
+        allowed: false,
+      });
+    }
+
+    // ------------------------------
+    // Determine if user is returning based on userId instead of session
+    const { data: existingUser } = await supabase
+      .from("events")
+      .select("id")
+      .eq("project_id", project.id)
+      .eq("user_id", userId)
+      .limit(1);
+
+    const isReturningUser = !!existingUser?.length;
+
+    // Add location to events
     const enhancedEvents = events.map((evt: TrackEvent) => ({
       ...evt,
       location,
     }));
 
-    const sessionId = events[0].sessionId;
-
-    // ----------------------------------------------------
-    // ✅ LIMIT CHECK — Max 10 unique session_ids per project
-   // Get all session_ids for this project
-const { data: sessionRows, error: sessionErr } = await supabase
-  .from("events")
-  .select("session_id")
-  .eq("project_id", project.id);
-
-if (sessionErr) {
-  console.error("Session check failed:", sessionErr);
-}
-
-// Get unique session IDs
-const sessionList = Array.from(new Set(sessionRows?.map(s => s.session_id) || []));
-
-// Check if current session is already known
-const alreadyKnown = sessionList.includes(sessionId);
-
-// Enforce max 10 sessions
-if (sessionList.length >= 10  && !alreadyKnown) {
-  return NextResponse.json({
-    message: "Session limit reached. Ignoring new session.",
-    allowed: false,
-  });
-}
-
-    // ----------------------------------------------------
-
+    // Insert into Supabase with userId and is_returning_user
     const { error } = await supabase.from("events").insert({
       project_id: project.id,
       session_id: sessionId,
+      user_id: userId, // <-- store the persistent userId
       events: enhancedEvents,
+      is_returning_user: isReturningUser,
     });
 
     if (error) {
@@ -107,7 +115,7 @@ if (sessionList.length >= 10  && !alreadyKnown) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, is_returning_user: isReturningUser });
   } catch (err) {
     console.error("Unexpected error in /api/track:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

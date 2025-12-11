@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import Settings from "./settings";
 import { useProfileStore } from "@/store/userProfile";
-import { supabase } from "@/lib/supaBaseClient";
+import { getSupabaseClient } from "@/lib/supaBaseClient";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import logo from '../../../assests/transparentbg.png'
@@ -23,13 +23,14 @@ import { IoSettings } from "react-icons/io5";
 import { MdOutlineBarChart } from "react-icons/md";
 import Table from "./table";
 import { useRef } from "react";
-import { useGenerateImage } from "recharts-to-png"
-import domtoimage from "dom-to-image-more";
+
 import { FaRegLightbulb } from "react-icons/fa"
 import { TbBulbFilled } from "react-icons/tb";
 import Modal from 'react-modal';
 import Profile from "./profile";
 type Events = {
+  userId: string;
+  isReturningUser: any;
   type: string;
   timestamp: string;
   sessionId: string;
@@ -66,7 +67,7 @@ export default function AnalyticsDashboard() {
 
  const [domtoimage, setDomToImage] = useState<any>(null);
 const [showNotice, setShowNotice] = useState(false);
-
+const supabase = getSupabaseClient();
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowNotice(true);
@@ -86,13 +87,37 @@ const [showNotice, setShowNotice] = useState(false);
 const [showSessionLimit, setShowSessionLimit] = useState(false);
 const [isClearModalOpen, setIsClearModalOpen] = useState(false);
 const [isClearing, setIsClearing] = useState(false);
-
-
-
+const [dat, setDat] =useState<any>(null)
+const [newUsersCount, setNewUsersCount] = useState(0);
+const [stepDirection, setStepDirection] = useState<any>(); 
 
  useEffect(() => {
   const fetchEvents = async () => {
     if (!link) return;
+
+ const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      console.log("Error fetching user:", userError);
+      return;
+    }
+
+// Get the project linked to the user
+const { data: project, error: projectError } = await supabase
+  .from("projects")
+  .select("*")
+  .eq("user_id", user.id) // assuming your projects table has a user_id column
+  .single();
+
+if (projectError || !project) {
+  console.log("Error fetching project:", projectError);
+  return;
+}
+if (project) {
+  setDat(project.project_name);
+  
+}
+
+console.log("Fetched project data:", dat);
 
     const { data, error } = await supabase
       .from("events")
@@ -103,6 +128,8 @@ const [isClearing, setIsClearing] = useState(false);
       console.log("Error fetching events:", error);
       return;
     }
+setStepDirection(data)
+console.log("Fetched events data stepdirection:", stepDirection);
 
     const flattenedEvents: Events[] = data?.flatMap((item: any) =>
       item.events.map((e: any) => ({
@@ -115,7 +142,7 @@ const [isClearing, setIsClearing] = useState(false);
     ) || [];
 
     setEvents(flattenedEvents);
-
+console.log("Flattened events:", flattenedEvents)
     // NEW: check session count
     const uniqueIds = new Set(
       flattenedEvents.map((e) => e.sessionId)
@@ -128,6 +155,18 @@ const [isClearing, setIsClearing] = useState(false);
 
   fetchEvents();
 }, [link]);
+
+
+useEffect(() => {
+  if (dat) {
+    console.log("dat state updated:", dat);
+  }
+}, [dat]);
+useEffect(() => {
+  if (stepDirection) {
+    console.log("step state updatedd here", stepDirection);
+  }
+}, [stepDirection]);
 
 
   const allEvents = useMemo(() => events, [events]);
@@ -149,7 +188,7 @@ const [isClearing, setIsClearing] = useState(false);
   { name: "AI", icon: <FaRobot /> },
 ];
 
- const {  feedback } = useProfileStore();
+
 
  const decrementStep = () => {
     setStep((prev) => prev - 1);
@@ -202,6 +241,11 @@ const data = Array.from(dailyUsersMap.entries())
   setChartData(data);
 }, [allEvents, timeRange]);
 
+
+
+
+
+
 const chartRef = useRef<HTMLDivElement>(null);
 
 const handleExportPNG = async () => {
@@ -237,6 +281,39 @@ const clearEventData = async () => {
   setIsClearModalOpen(false);
 };
  
+useEffect(() => {
+  if (!Array.isArray(stepDirection)) return;
+
+  // Define the shape of a row
+  type EventRow = {
+    id: string;
+    project_id: string;
+    user_id: string;
+    session_id: string;
+    events: any[];
+    is_returning_user: boolean;
+    created_at: string;
+  };
+
+  const rows = stepDirection as EventRow[];
+
+  // Group rows by session_id
+  const grouped: Record<string, EventRow[]> = rows.reduce((acc, row) => {
+    if (!acc[row.session_id]) acc[row.session_id] = [];
+    acc[row.session_id].push(row);
+    return acc;
+  }, {} as Record<string, EventRow[]>);
+
+  // Count sessions where the FIRST row has is_returning_user = false
+  const newSessionCount = Object.values(grouped).filter((sessionRows) => {
+    return sessionRows[0].is_returning_user === false;
+  }).length;
+
+  console.log("New users (unique sessions):", newSessionCount);
+  setNewUsersCount(newSessionCount);
+}, [stepDirection]);
+
+
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-200">
@@ -353,7 +430,7 @@ alt="logo"
     >
       <div className="flex lg:flex-row flex-col lg:items-center lg:justify-between">
       <h2 className="text-2xl font-bold text-gray-700 mb-4 ">
-        {feedback} Report
+        {dat} Report
       </h2>
       {showSessionLimit && (
   <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 mb-4 rounded-xl">
@@ -374,7 +451,7 @@ alt="logo"
       <div className="space-y-5">
         {/* Visitors */}
         <p className="text-lg font-semibold text-gray-700 font-figtree">
-          👥 Total number of visitors from{" "}
+          👥 Total number of visits from{" "}
           <span className="text-blue-600 font-bold">
             {allEvents.length > 0
               ? new Date(allEvents[0].timestamp).toLocaleDateString()
@@ -390,12 +467,19 @@ alt="logo"
           <span className=" text-[20px] lg:text-2xl text-purple-600 font-bold">
             {uniqueVisitors}
           </span>
-          <br></br><span className=" text-[12px] flex items-center justify-center font-bold text-blue-600 font-figtree">(latter date is the date the last visitor visited the site)</span>
+          <br></br><span className=" text-[12px] flex items-center justify-center font-bold text-blue-600 font-figtree">(latter date is the date the earliest visitor in this interval visited the site)</span>
         </p>
+
+<p className="text-lg font-semibold text-gray-700 font-figtree">
+  🆕 Number of new users in this timeframe:{" "}
+  <span className="text-green-600 font-bold text-[20px] lg:text-2xl">
+    {newUsersCount}
+  </span>
+</p>
 
         
         <button
-          className="px-4 py-3 rounded-3xl 
+          className="px-3 py-2 rounded-3xl 
           bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
           shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center gap-2"
           onClick={() => setStep((prev) => prev + 1)}
@@ -467,12 +551,13 @@ alt="logo"
   </ResponsiveContainer>
   </div>
 </div>
+
   </div>
 )}
  {
   step == 2 ?
   <div>
-    <Table events={events} decrement={decrementStep}/>
+    <Table events={events} decrement={decrementStep} stepdirection={stepDirection}/>
      </div>
   : ""
  }

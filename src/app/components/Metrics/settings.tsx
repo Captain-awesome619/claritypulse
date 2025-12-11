@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { supabase } from "@/lib/supaBaseClient";
+import { getSupabaseClient } from "@/lib/supaBaseClient";
 import Modal from "react-modal";
 import { PulseLoader } from "react-spinners";
 
@@ -11,7 +11,7 @@ const Settings = () => {
   const [logoutModal, setLogoutModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [loading, setLoading] = useState(false);
-
+const supabase = getSupabaseClient();
   // -----------------------
   // Logout
   // -----------------------

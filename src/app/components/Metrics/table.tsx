@@ -23,10 +23,20 @@ type Events = {
   referrer?: string;
   payload?: { scrollDepth?: number; eventType?: string; location?: any };
 };
+type StepDirection = {
+  session_id: any;
+  sessionId: string;
+  is_returning_user: boolean; // true = returning, false = new user
+  location?: {
+    city?: string;
+    country_name?: string;
+  };
+};
 
 type TableProps = {
   events: Events[];
   decrement: () => void;
+  stepdirection?: StepDirection[];
 };
 
 // Parse browser
@@ -39,21 +49,34 @@ function parseBrowser(userAgent?: string) {
   return "Unknown";
 }
 
-const Table = ({ events, decrement }: TableProps) => {
+const Table = ({ events, decrement, stepdirection }: TableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [activity, setActivity] = useState(1);
   const [data, setData] = useState<Events[]>([]);
   const [session, setSession] = useState<string>("");
 
-  const sessionRows = useMemo(() => {
-    const map = new Map<string, Events>();
-    events.forEach((e) => {
-      if (!map.has(e.sessionId)) {
-        map.set(e.sessionId, e);
-      }
-    });
-    return Array.from(map.values());
-  }, [events]);
+ const sessionRows = useMemo(() => {
+  const map = new Map<string, Events>();
+  events.forEach((e) => {
+    if (!map.has(e.sessionId)) {
+      map.set(e.sessionId, e);
+    }
+  });
+
+  // Merge stepdirection info
+  const rows = Array.from(map.values()).map((event) => {
+    const stepInfo = stepdirection?.find(
+      (s) => s.session_id === event.sessionId || s.sessionId === event.sessionId
+    );
+    return {
+      ...event,
+      is_returning_user: stepInfo?.is_returning_user ?? false,
+      session_location: stepInfo?.location,
+    };
+  });
+
+  return rows;
+}, [events, stepdirection]);
 
   const columnHelper = createColumnHelper<any>();
 
@@ -106,6 +129,7 @@ const Table = ({ events, decrement }: TableProps) => {
       cell: (info) => <div className="font-figtree">{info.getValue() || "None"}</div>,
     }),
 
+    
     // Browser
     columnHelper.accessor("userAgent", {
       header: () => (
@@ -147,6 +171,25 @@ const Table = ({ events, decrement }: TableProps) => {
         );
       },
     }),
+
+
+columnHelper.display({
+  id: "user_status",
+  header: () => <div className="font-figtree">User Type</div>,
+  cell: (info) => {
+    const isReturning = info.row.original.is_returning_user;
+    return (
+      <span
+        className={`font-figtree font-semibold ${
+          isReturning ? "text-gray-700" : "text-green-500"
+        }`}
+      >
+        {isReturning ? "Returning" : "New User"}
+      </span>
+    );
+  },
+}),
+
 
     // Action
     columnHelper.display({

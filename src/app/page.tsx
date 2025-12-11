@@ -11,7 +11,7 @@ import { BsGlobe } from "react-icons/bs";
 import { GrDocumentUser } from "react-icons/gr";
 import { MdOutlineMan } from "react-icons/md";
 import { ImCool2 } from "react-icons/im";
-import { supabase } from '../lib/supaBaseClient'
+import { getSupabaseClient } from "@/lib/supaBaseClient";
 import { ClipLoader } from "react-spinners";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/userProfile";
@@ -38,6 +38,8 @@ export default function Home() {
     email: "",
     password: "",
   });
+  const supabase = getSupabaseClient();
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false); // ⬅ loading state
  const [forgotModalOpen, setForgotModalOpen] = useState(false);
@@ -253,6 +255,7 @@ const router = useRouter();
           transition-all duration-700 ease-in-out hover:shadow-[0_10px_20px_-5px_rgba(30,144,255,0.8),0_20px_40px_-10px_rgba(65,105,225,0.7)]"
           style={{ backgroundImage: "url('/landingbackground.svg')" }}
         >
+       
           <AnimatePresence mode="wait">
             {account ? (
              
@@ -263,9 +266,9 @@ const router = useRouter();
                 initial="initialLeft"
                 animate="animate"
                 exit="exitLeft"
-                className="flex flex-col items-center gap-4  w-full h-full "
+                className="flex flex-col items-center gap-4 p-4 lg:p-0 w-full h-full "
               >
-                <div className="rounded-[40%] bg-black flex items-center justify-center w-8 h-9">
+                <div className="rounded-[40%] bg-black flex items-center justify-center w-8 h-9 ">
                   <IoEnterOutline size={20} color="white" />
                 </div>
 
@@ -339,9 +342,11 @@ const router = useRouter();
                 </div>
 
                 <div className="flex justify-center mt-3 gap-24 items-center">
-                  <IoLogoWhatsapp size={25} color="green" />
-                  <BsGlobe size={20} color="black" />
-                  <FaLinkedinIn size={20} color="blue" />
+                  <a   href="https://Wa.me/+2348167160663"
+              target="_blank"
+              rel="noreferrer"><IoLogoWhatsapp size={25} color="green" /></a>
+                 <a  href="https://portfolio-zsi6.onrender.com/" target="_blank" rel="noopener noreferrer"> <BsGlobe size={20} color="black" /></a>
+                   <a  href="http://www.linkedin.com/in/toluwalase-ogunsola-5a5719235" target="_blank" rel="noopener noreferrer" ><FaLinkedinIn size={20} color="blue" /></a>
                 </div>
               </motion.form>
             ) : (
@@ -353,7 +358,7 @@ const router = useRouter();
                 initial="initialRight"
                 animate="animate"
                 exit="exitRight"
-                className="flex flex-col items-center gap-4  w-full h-full  "
+                className="flex flex-col items-center gap-4  w-full h-full 4 p-4 lg:p-0 "
               >
                 <div className="rounded-[40%] bg-black flex items-center justify-center w-9 h-10">
                   <GrDocumentUser size={20} color="white" />
@@ -363,7 +368,7 @@ const router = useRouter();
                   <h3 className="text-black font-figtree font-bold text-[20px]">
                     Sign up with email
                   </h3>
-                  <h4 className="text-gray-500 font-figtree font-semibold text-[16px]">
+                  <h4 className="bg-linear-to-r from-blue-500 via-violet-500 to-pink-500 bg-clip-text text-transparent font-figtree font-bold text-[16px]">
                     Turn raw website activity into actionable insights.
                   </h4>
                 </div>

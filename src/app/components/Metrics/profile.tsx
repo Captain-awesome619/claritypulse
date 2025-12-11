@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { supabase } from '@/lib/supaBaseClient'
+import { getSupabaseClient } from '@/lib/supaBaseClient';
 import { useEffect, useState } from "react";
 import { PulseLoader } from 'react-spinners';
 import { useProfileStore } from '@/store/userProfile';
@@ -15,6 +15,7 @@ interface Profile {
   [key: string]: any;
 }
 Modal.setAppElement("body");
+
 const Profile = () => {
 const [prof, setProf] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ const [copied, setCopied] = useState(false);
   const [newUsername, setNewUsername] = useState("");
   const [updating, setUpdating] = useState(false);
  const {  feedback } = useProfileStore();
-
+const supabase = getSupabaseClient();
 useEffect(() => {
      const loadUserData = async () => {
          setLoading(true);

@@ -11,7 +11,7 @@ import { FaCopy } from "react-icons/fa";
 import { IoMdCheckmark } from "react-icons/io";
 import { MdDeleteForever } from "react-icons/md";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { supabase } from "@/lib/supaBaseClient";
+import { getSupabaseClient } from "@/lib/supaBaseClient";
 import Modal from "react-modal";
 
 import { useRouter } from "next/navigation";
@@ -19,11 +19,13 @@ import { useRouter } from "next/navigation";
 export default function DashboardPage() {
   const { profile, users, setLink, setFeedback, link, feedback } = useProfileStore();
 Modal.setAppElement("body");
+const supabase = getSupabaseClient();
 
   const [projectName, setProjectName] = useState("");
   const [domain, setDomain] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [name, setName] = useState("");
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
 const [copied, setCopied] = useState(false);
@@ -92,6 +94,7 @@ console.log('this is prof', prof)
       if (project) {
         setSite(project.domain || "");
         setSnippet(project.snippet || "");
+        setName(project.project_name || "");
       }
 
     } catch (err) {
@@ -287,7 +290,7 @@ async function deleteProjectAndEvents() {
   return (
     <main className={`relative px-2 lg:px-0  h-screen w-screen flex flex-col  bg-no-repeat bg-cover bg-bottom-left ${ !snippet ? " justify-center items-center  " : ""}`}
       style={{ backgroundImage: "url('/dashboardbg2.jpg')" }}
-    >
+    >+
 {loading && (
   <div className="fixed inset-0  bg-opacity-70 backdrop-blur-md flex items-center justify-center z-50">
     <PulseLoader color="blue" size={15} />
@@ -299,7 +302,7 @@ async function deleteProjectAndEvents() {
         <div className="relative lg:p-8  ">
         <div className="  lg:w-[550px] lg:h-[350px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
 <div className="flex flex-col p-4 gap-4">
-<h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {feedback}</h3>
+<h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {name}</h3>
 <h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {site}</h3>
 <div className=" flex flex-col gap-3">
 <div >

@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "src/app/api/create-project", "public/track.js", "src/app/components/Metrics/page.tsx"  ],
+, "src/app/api/create-project", "public/track.js", "src/app/components/Metrics/page.tsx", "src/lib/supaBaseClient.tsx"  ],
   "exclude": ["node_modules"]
 }
