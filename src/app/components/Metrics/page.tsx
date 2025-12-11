@@ -23,8 +23,6 @@ import { IoSettings } from "react-icons/io5";
 import { MdOutlineBarChart } from "react-icons/md";
 import Table from "./table";
 import { useRef } from "react";
-
-import { FaRegLightbulb } from "react-icons/fa"
 import { TbBulbFilled } from "react-icons/tb";
 import Modal from 'react-modal';
 import Profile from "./profile";

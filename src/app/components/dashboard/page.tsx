@@ -10,7 +10,6 @@ import { PulseLoader } from "react-spinners";
 import { FaCopy } from "react-icons/fa";
 import { IoMdCheckmark } from "react-icons/io";
 import { MdDeleteForever } from "react-icons/md";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { getSupabaseClient } from "@/lib/supaBaseClient";
 import Modal from "react-modal";
 

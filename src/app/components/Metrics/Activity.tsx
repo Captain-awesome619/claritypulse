@@ -2,14 +2,7 @@
 import React from 'react'
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useMemo } from 'react';
-import {
-  Card,
-  Title,
-  Text,
-  Grid,
-  Flex,
-  Metric,
-} from "@tremor/react";
+
 import {
   LineChart,
   Line,
@@ -24,19 +17,13 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import {
-  MousePointerClick,
-  ScrollText,
-  Timer,
-  Users,
-} from "lucide-react";
+
 import { FaMouse } from "react-icons/fa";
 import { FaScroll } from "react-icons/fa6";
 import { MdOutlineAssessment } from "react-icons/md";
 import { useState } from 'react';
 import { FaClock } from "react-icons/fa";
 import { LuMousePointerClick } from "react-icons/lu";
-import { color } from 'framer-motion';
 import { FaMap } from "react-icons/fa";
 import Modal from 'react-modal';
 
@@ -132,17 +119,17 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
           <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <Text className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
       Mouse Interactions
-    </Text>
+    </h3>
     <FaMouse className="text-gray-600 text-lg" />
   </div>
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
       {mouseCount}
-    </Metric>
+    </div>
   </div>
 </div>
 
@@ -151,16 +138,16 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
           <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <Text className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
     Avg Scroll Depth(px)
-    </Text>
+    </h3>
     <FaScroll className="text-gray-600 text-lg" />
   </div>
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
       {mouseCount}{avgScroll.toFixed(1)}
-    </Metric>
+    </div>
   </div>
 </div>
 
@@ -168,17 +155,17 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
           <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <Text className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
     Number of Clicks
-    </Text>
+    </h3>
     <LuMousePointerClick className="text-gray-600 text-lg" />
   </div>
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
       {count}
-    </Metric>
+    </div>
   </div>
 </div>
 
@@ -188,17 +175,17 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
          <div className="lg:w-60 lg:h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <Text className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
      Session Length {""}in {unit}
-    </Text>
+    </h3>
     <FaClock className="text-gray-600 text-lg" />
   </div>
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <Metric className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
       {displayDuration  } 
-    </Metric>
+    </div>
   </div>
    <div className="flex justify-end ite">
         <button
@@ -215,9 +202,9 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
       <div className='flex flex-col gap-4 mt-8'>
       <h3 className="font-figtree font-bold text-gray-700 text-[25px] ml-4 underline underline-offset-2 "> Charts</h3>
       <div  className='grid lg:grid-cols-2 place-items-center gap-6' > 
- <Card>
-          <Title className='text-sm font-figtree font-semibold text-gray-700'>Scroll Depth Over Time</Title>
-          <Text className='text-sm font-figtree font-semibold text-gray-700'>Tracks how deep users scroll</Text>
+ <div className='w-full'>
+          <h3 className='text-sm font-figtree font-semibold text-gray-700'>Scroll Depth Over Time</h3>
+          <h3 className='text-sm font-figtree font-semibold text-gray-700'>Tracks how deep users scroll</h3>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={scrollData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -233,11 +220,11 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
               />
             </LineChart>
           </ResponsiveContainer>
-        </Card>
+        </div>
 
-        <Card>
-          <Title className='text-sm font-figtree font-semibold text-gray-700'>Mouse Events</Title>
-          <Text className='text-sm font-figtree font-semibold text-gray-700'>Hover, click & movement frequency</Text>
+        <div className='w-full'>
+          <h3 className='text-sm font-figtree font-semibold text-gray-700'>Mouse Events</h3>
+          <h3 className='text-sm font-figtree font-semibold text-gray-700'>Hover, click & movement frequency</h3>
           <ResponsiveContainer width="100%" height={280}>
           <BarChart
   data={[
@@ -272,11 +259,11 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 </BarChart>
 
           </ResponsiveContainer>
-        </Card>
+        </div>
      
 
-      <Card className='mb-12'>
-        <Title className='text-sm font-figtree font-semibold text-gray-700'>Event Type Breakdown</Title>
+      <div className='mb-12 w-full'>
+        <h3 className='text-sm font-figtree font-semibold text-gray-700'>Event Type Breakdown</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart className='pb-12'>
             <Pie
@@ -295,7 +282,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-      </Card>
+      </div>
 
       </div>
       </div>
