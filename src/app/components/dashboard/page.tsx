@@ -325,7 +325,7 @@ async function deleteProjectAndEvents() {
     </button>
 </div>
 <h3 className="text-green-300 font-mono font-bold">
-  Paste the script above into the {'<Head> , <body> or parent tag '} section of your code.
+  Copy Paste the script above into the {'<Head> , <body> or parent tag '} section of your code.
 </h3>
 </div>
 </div>
