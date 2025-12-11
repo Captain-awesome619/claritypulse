@@ -105,7 +105,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
               onClick={() => setShowModal(true)}
             >
               <div>
-                <FaMap color="white" className='text-[12px] lg:text-[14px]' />
+                <FaMap color="white" className='text-[10px] lg:text-[14px]' />
               </div>
               <h4 className=" text-white font-mono font-bold text-[12px] lg:text-[13px] ">View Heatmap</h4>
             </button>

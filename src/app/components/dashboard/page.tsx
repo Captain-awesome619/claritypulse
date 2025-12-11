@@ -298,7 +298,7 @@ async function deleteProjectAndEvents() {
 
 
       {snippet ? (
-        <div className="relative lg:p-8  ">
+        <div className="relative lg:p-8  pt-4 ">
         <div className="  lg:w-[550px] lg:h-[350px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
 <div className="flex flex-col p-4 gap-4">
 <h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {name}</h3>

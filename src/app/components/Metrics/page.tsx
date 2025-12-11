@@ -450,7 +450,7 @@ alt="logo"
         {/* Visitors */}
         <p className="text-lg font-semibold text-gray-700 font-figtree">
           👥 Total number of visits from{" "}
-          <span className="text-blue-600 font-bold">
+          <span className="text-blue-600 font-semibold font-figtree">
             {allEvents.length > 0
               ? new Date(allEvents[0].timestamp).toLocaleDateString()
               : "No visitors yet"}{" "}
@@ -462,7 +462,7 @@ alt="logo"
               : "No visitors yet"}
           </span>{" "}
           is{" "}
-          <span className=" text-[20px] lg:text-2xl text-purple-600 font-bold">
+          <span className=" text-[20px] lg:text-2xl text-purple-600 font-bold font-mono">
             {uniqueVisitors}
           </span>
           <br></br><span className=" text-[12px] flex items-center justify-center font-bold text-blue-600 font-figtree">(latter date is the date the earliest visitor in this interval visited the site)</span>
@@ -470,7 +470,7 @@ alt="logo"
 
 <p className="text-lg font-semibold text-gray-700 font-figtree">
   🆕 Number of new users in this timeframe:{" "}
-  <span className="text-green-600 font-bold text-[20px] lg:text-2xl">
+  <span className="text-green-600 font-bold font-mono text-[20px] lg:text-2xl">
     {newUsersCount}
   </span>
 </p>
