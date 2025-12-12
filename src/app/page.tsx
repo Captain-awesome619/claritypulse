@@ -307,7 +307,7 @@ const router = useRouter();
                       className="outline-none bg-transparent px-2 text-black placeholder-gray-400 font-figtree font-semibold w-full"
                       placeholder="Your Password..."
                     />
-                    <IoMdEye size={20} color="black" className="ml-auto mr-2"    onClick={() => setShowPassword((prev) => !prev)} />
+                    <IoMdEye size={20} color="black" className="ml-auto mr-2 cursor-pointer"    onClick={() => setShowPassword((prev) => !prev)} />
                   </div>
                   
                   <h4 className="text-black font-figtree font-semibold text-[15px] ml-auto mt-2 cursor-pointer"
@@ -433,7 +433,7 @@ const router = useRouter();
                       className="outline-none bg-transparent px-2 text-black placeholder-gray-400 font-figtree font-semibold w-full"
                       placeholder="Your Password..."
                     />
-                    <IoMdEye size={20} color="black" className="ml-auto mr-2"    onClick={() => setShowPassword((prev) => !prev)}  />
+                    <IoMdEye size={20} color="black" className="ml-auto mr-2 curdor-pointer"    onClick={() => setShowPassword((prev) => !prev)}  />
                   </div>
                   {errors.password && (
                     <p className="text-red-500 text-[14px] mt-1">

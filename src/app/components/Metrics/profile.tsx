@@ -144,7 +144,7 @@ loadUserData();
   <h4 className='lg:text-[15px] font-bold font-mono '>{site}</h4>
   </div>
   <div className='flex '>
-  <h3 className="bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px] text-[12px]">
+  <h3 className="bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px] text-[10.5px]">
   {snippet}
 </h3>
 <button
