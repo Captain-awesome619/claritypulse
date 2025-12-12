@@ -21,6 +21,7 @@ Modal.setAppElement("body");
 const supabase = getSupabaseClient();
 
   const [projectName, setProjectName] = useState("");
+  const [initialLoading, setInitialLoading] = useState(true);
   const [domain, setDomain] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -102,6 +103,7 @@ console.log('this is prof', prof)
   };
 
   loadUserData();
+    loadUserData().finally(() => setInitialLoading(false)); 
 }, [prof]);
 
   const variants = {
@@ -285,6 +287,15 @@ async function deleteProjectAndEvents() {
   setDeleting(false);
 }
 
+ if (initialLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center  backdrop-blur-md z-50  h-screen w-screen flex-col  bg-no-repeat bg-cover bg-bottom-left "
+       style={{ backgroundImage: "url('/dashboardbg2.jpg')" }}
+      >
+        <PulseLoader color="purple" size={15} />
+      </div>
+    );
+  }
 
   return (
     <main className={`relative px-2 lg:px-0  h-screen w-screen flex flex-col  bg-no-repeat bg-cover bg-bottom-left ${ !snippet ? " justify-center items-center  " : ""}`}
