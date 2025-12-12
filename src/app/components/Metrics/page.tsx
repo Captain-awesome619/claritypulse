@@ -570,7 +570,7 @@ alt="logo"
 
 
         {activePage === "Profile" && (
-          <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
+          <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5 items-center justify-center">
            <Profile />
           </div>
         )}

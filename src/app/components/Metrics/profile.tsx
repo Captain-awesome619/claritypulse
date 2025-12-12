@@ -118,24 +118,24 @@ loadUserData();
   };
 
   return (
-    <div>
+    <div className=''>
       {loading ? <PulseLoader/> :
       
-      <div className='grid gap-6'>
+      <div className='grid gap-6 '>
       
       <div className='flex flex-row  items-center justify-between'>
         <div className='flex flex-col '>
-<h4 className='lg:text-[25px] font-bold font-mono '>{prof?.username}</h4>
-<div className='flex items-center justify-center text-[12px] font-bold font-figtree'>(Joined {""}{new Date(prof?.created_at).toDateString()})</div>
+<h4 className='lg:text-[25px] font-bold font-mono text-[18px] '>{prof?.username}</h4>
+<div className='flex items-center justify-center  text-[12px] font-bold font-figtree'>(Joined {""}{new Date(prof?.created_at).toDateString()})</div>
 </div>
 <div>
  <button
               className="lg:px-3 lg:py-2 px-2 py-2 rounded-3xl 
               bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
-              shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center lg:gap-2 gap-2"
+              shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center lg:gap-2 gap-1"
              onClick={() => setIsOpen(true)}
             >
-              <h4 className=" text-white font-mono font-bold text-[12px] lg:text-[13px] ">Change Username</h4>
+              <h4 className=" text-white font-mono font-bold text-[11px] lg:text-[13px] ">Change Username</h4>
             </button>
             </div>
       </div>
@@ -144,7 +144,7 @@ loadUserData();
   <h4 className='lg:text-[15px] font-bold font-mono '>{site}</h4>
   </div>
   <div className='flex '>
-  <h3 className="bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px] text-[10.5px]">
+  <h3 className="bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px] text-[10px]">
   {snippet}
 </h3>
 <button
