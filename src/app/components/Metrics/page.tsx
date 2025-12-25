@@ -183,7 +183,7 @@ useEffect(() => {
   const sidebarItems = [
   { name: "Activity", icon: <FaRegChartBar /> },
   { name: "Profile", icon: <FaUser /> },
-  { name: "AI", icon: <FaRobot /> },
+  { name: "AI assistant", icon: <FaRobot /> },
 ];
 
 
