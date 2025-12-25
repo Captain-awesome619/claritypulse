@@ -277,6 +277,7 @@ const clearEventData = async () => {
   setEvents([]);
   setShowSessionLimit(false);
   setIsClearModalOpen(false);
+    setStepDirection([]);
 };
  
 useEffect(() => {

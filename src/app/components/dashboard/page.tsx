@@ -295,7 +295,7 @@ async function deleteProjectAndEvents() {
         <PulseLoader color="purple" size={15} />
       </div>
     );
-  }
+  } 
 
   return (
     <main className={`relative px-2 lg:px-0  h-screen w-screen flex flex-col  bg-no-repeat bg-cover bg-bottom-left ${ !snippet ? " justify-center items-center  " : ""}`}
