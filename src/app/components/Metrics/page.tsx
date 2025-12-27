@@ -576,7 +576,7 @@ alt="logo"
           </div>
         )}
 
-        {activePage === "AI" && (
+        {activePage === "AI-assistant" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Fature coming soon</h2>
             <p className="text-lg text-gray-700">The AI assistant will be ready soon</p>
