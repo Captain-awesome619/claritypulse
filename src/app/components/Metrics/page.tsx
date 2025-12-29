@@ -26,6 +26,7 @@ import { useRef } from "react";
 import { TbBulbFilled } from "react-icons/tb";
 import Modal from 'react-modal';
 import Profile from "./profile";
+import PulseLoader from "react-spinners/PulseLoader";
 type Events = {
   userId: string;
   isReturningUser: any;
@@ -65,6 +66,8 @@ export default function AnalyticsDashboard() {
 
  const [domtoimage, setDomToImage] = useState<any>(null);
 const [showNotice, setShowNotice] = useState(false);
+const [isLoading, setIsLoading] = useState(true);
+
 const supabase = getSupabaseClient();
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,7 +95,7 @@ const [stepDirection, setStepDirection] = useState<any>();
  useEffect(() => {
   const fetchEvents = async () => {
     if (!link) return;
-
+setIsLoading(true);
  const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
       console.log("Error fetching user:", userError);
@@ -140,7 +143,7 @@ console.log("Fetched events data stepdirection:", stepDirection);
     ) || [];
 
     setEvents(flattenedEvents);
-console.log("Flattened events:", flattenedEvents)
+
     // NEW: check session count
     const uniqueIds = new Set(
       flattenedEvents.map((e) => e.sessionId)
@@ -149,6 +152,7 @@ console.log("Flattened events:", flattenedEvents)
     if (uniqueIds.size >=10) {
       setShowSessionLimit(true);
     }
+     setIsLoading(false);
   };
 
   fetchEvents();
@@ -162,7 +166,7 @@ useEffect(() => {
 }, [dat]);
 useEffect(() => {
   if (stepDirection) {
-    console.log("step state updatedd here", stepDirection);
+
   }
 }, [stepDirection]);
 
@@ -415,7 +419,15 @@ alt="logo"
       <div className="flex-1 ml-0 md:ml-64 lg:mt-[5%] h-screen overflow-y-auto  p-6 mt-14">
 
         {activePage === "Activity" && (
+
         <>
+        {isLoading ? (
+      <div className="flex items-center justify-center h-[60vh]">
+        <PulseLoader color="#7c3aed" size={15} />
+      </div>
+    ) : (
+        <>
+        
       {step === 1 && (
   <div className="overflow-y-auto mb-20">
     <div
@@ -552,7 +564,7 @@ alt="logo"
 </div>
 
   </div>
-)}
+)}1
  {
   step == 2 ?
   <div>
@@ -560,11 +572,9 @@ alt="logo"
      </div>
   : ""
  }
-
-
-
-
 </>
+ )}
+  </>
         )}
 
 

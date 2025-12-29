@@ -70,9 +70,9 @@ const navigate = useRouter()
       if (profileError) {
         console.log("Profile fetch error:", profileError.message);
       } else {
-        console.log("Profile:", profileData);
+       
        setProf(profileData?.username); 
-console.log('this is prof', prof)
+
       }
  
       // ------------------------------------
@@ -89,7 +89,7 @@ console.log('this is prof', prof)
         return;
       }
 
-      console.log("Project snippet:", project?.snippet);
+   
 
       if (project) {
         setSite(project.domain || "");
@@ -310,7 +310,7 @@ async function deleteProjectAndEvents() {
 
       {snippet ? (
         <div className="relative lg:p-8  pt-4 ">
-        <div className="  lg:w-[550px] lg:h-[380px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
+        <div className="  lg:w-[600px] lg:h-[400px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
 <div className="flex flex-col p-4 gap-4">
 <h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {name ? <span>{name}</span> : <span>{projectName}</span>}</h3>
 <h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {site ? <span>{site}</span> : <span>{domain}</span>}</h3>
@@ -318,6 +318,7 @@ async function deleteProjectAndEvents() {
 <div >
 <h3 className="text-[13px] bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px]">
   {snippet}
+
 </h3>
 
  <button
@@ -335,14 +336,28 @@ async function deleteProjectAndEvents() {
       )}
     </button>
 </div>
-<h3 className="text-green-300 font-mono font-bold">
+<div className="text-green-300 font-mono font-bold flex flex-col">
   Copy and Paste the script above into the {'<Head> , <body> or parent tag '} section of your code.
-</h3>
+  <a  href="https://www.linkedin.com/posts/toluwalase-ogunsola-frontend-developer_claritypulse-httpslnkdindnsfducc-activity-7407421899175174144-hjMd?utm_source=share&utm_medium=member_desktop&rcm=ACoAADqpNQ0BTodOwUQ7kv01vuCXDdJanHgLoyQ"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="pt-2"
+  >
+  <button
+              className="lg:px-4 lg:py-3 px-3 py-3 rounded-3xl 
+              bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
+              shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center lg:gap-2 gap-2"
+            >
+              <h4 className=" text-white font-mono font-bold text-[12px] lg:text-[13px] ">View Demo</h4>
+            </button>
+
+  </a>
+</div>
 </div>
 </div>
 <div className="p-4 flex items-center justify-between">
   <button className="cursor-pointer px-4 py-3 rounded-3xl text-black bg-green-300 font-mono font-bold" onClick={viewMetrics}>
-    View metrics
+    View Site Metrics
   </button>
 
 <MdDeleteForever className="text-red-400 cursor-pointer" size={25}  onClick={() => setDeleteModal(true)}/>
