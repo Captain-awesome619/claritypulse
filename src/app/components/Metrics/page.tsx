@@ -564,10 +564,10 @@ alt="logo"
 </div>
 
   </div>
-)}1
+)}
  {
   step == 2 ?
-  <div>
+  <div className="lg:pb-0 pb-3">
     <Table events={events} decrement={decrementStep} stepdirection={stepDirection}/>
      </div>
   : ""
