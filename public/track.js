@@ -21,6 +21,28 @@
   const sessionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   // ------------------------------
+  // ✅ DEVICE DETECTION (BEST OPTION)
+  function getDeviceInfo() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const hasTouch =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+    let type = "desktop";
+    if (width <= 768 && hasTouch) type = "mobile";
+    else if (width <= 1024 && hasTouch) type = "tablet";
+
+    return {
+      type,
+      screen: { width, height },
+      touch: hasTouch,
+    };
+  }
+
+  // Capture once per session
+  const deviceInfo = getDeviceInfo();
+
+  // ------------------------------
   // Fetch user location
   async function fetchLocation() {
     try {
@@ -37,11 +59,11 @@
 
     // Load rrweb
     const rrwebScript = document.createElement("script");
-    rrwebScript.src = "https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js";
+    rrwebScript.src =
+      "https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js";
     document.head.appendChild(rrwebScript);
 
     rrwebScript.onload = () => {
-      console.log("rrweb loaded");
       startTracker(userLocation);
     };
   }
@@ -60,9 +82,9 @@
 
       const body = JSON.stringify({
         apiKey,
-        userId,   // ⬅ Send persistent userId
+        userId,
         sessionId,
-        events: payload
+        events: payload,
       });
 
       if (navigator.sendBeacon) {
@@ -72,7 +94,7 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body,
-        }).catch((err) => console.error("Failed to send events:", err));
+        }).catch(() => {});
       }
     };
 
@@ -88,14 +110,19 @@
         title: document.title,
         referrer: document.referrer,
         userAgent: navigator.userAgent,
-        payload: { ...data, location: userLocation || null },
+        payload: {
+          ...data,
+          device: deviceInfo, // ✅ DEVICE INFO ADDED HERE
+          location: userLocation || null,
+        },
       });
     };
 
+    // ------------------------------
     // Initial pageview
     pushEvent("pageview");
 
-    // Click, scroll, mousemove, timing, rrweb logic here...
+    // Click tracking
     document.addEventListener("click", (e) => {
       const target = e.target;
       pushEvent("click", {
@@ -107,10 +134,13 @@
       });
     });
 
+    // Scroll tracking
     let lastScrollPercent = 0;
     window.addEventListener("scroll", () => {
       const percent = Math.round(
-        (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
+        (window.scrollY /
+          (document.body.scrollHeight - window.innerHeight)) *
+          100
       );
       if (percent !== lastScrollPercent) {
         pushEvent("scroll", { scrollDepth: percent });
@@ -118,6 +148,7 @@
       }
     });
 
+    // Mouse movement
     let lastMove = 0;
     document.addEventListener("mousemove", (e) => {
       const now = Date.now();
@@ -127,13 +158,20 @@
       }
     });
 
+    // Session duration
     const startTime = Date.now();
     window.addEventListener("beforeunload", () => {
-      pushEvent("timing", { duration: Math.round((Date.now() - startTime) / 1000) });
+      pushEvent("timing", {
+        duration: Math.round((Date.now() - startTime) / 1000),
+      });
       flushEvents();
     });
 
-    rrweb.record({ emit: (event) => pushEvent("rrweb", event) });
+    // rrweb
+    rrweb.record({
+      emit: (event) => pushEvent("rrweb", event),
+    });
+
     window._debugFlushEvents = flushEvents;
   }
 

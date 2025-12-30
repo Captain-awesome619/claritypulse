@@ -21,8 +21,21 @@ type Events = {
   sessionId: string;
   userAgent?: string;
   referrer?: string;
-  payload?: { scrollDepth?: number; eventType?: string; location?: any };
+  payload?: {
+    scrollDepth?: number;
+    eventType?: string;
+    location?: any;
+    device?: {
+      type?: "mobile" | "tablet" | "desktop";
+      screen?: {
+        width?: number;
+        height?: number;
+      };
+      touch?: boolean;
+    };
+  };
 };
+
 type StepDirection = {
   session_id: any;
   sessionId: string;
@@ -48,6 +61,42 @@ function parseBrowser(userAgent?: string) {
   if (userAgent.includes("Edg")) return "Edge";
   return "Unknown";
 }
+
+function parseDeviceFromUA(userAgent?: string) {
+  if (!userAgent) return "unknown";
+
+  const ua = userAgent.toLowerCase();
+
+  if (/mobile|iphone|ipod|android.*mobile|windows phone/.test(ua)) {
+    return "mobile";
+  }
+
+  if (/ipad|tablet|android(?!.*mobile)/.test(ua)) {
+    return "tablet";
+  }
+
+  return "desktop";
+}
+
+
+function getSessionDevice(events: Events[], sessionId: string) {
+  const event = events.find((e) => e.sessionId === sessionId);
+
+  const device = parseDeviceFromUA(event?.userAgent);
+
+  console.log(
+    "[getSessionDevice]",
+    "session:",
+    sessionId,
+    "userAgent:",
+    event?.userAgent,
+    "device:",
+    device
+  );
+
+  return device;
+}
+
 
 const Table = ({ events, decrement, stepdirection }: TableProps) => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -140,6 +189,37 @@ const Table = ({ events, decrement, stepdirection }: TableProps) => {
       ),
       cell: (info) => <div className="font-figtree">{parseBrowser(info.getValue())}</div>,
     }),
+
+// Device
+columnHelper.display({
+  id: "device",
+  header: () => (
+    <div className="flex items-center gap-2 font-figtree">
+      <span className="text-purple-600">💻</span>
+      Device
+    </div>
+  ),
+  cell: (info) => {
+    const sessionId = info.row.original.sessionId;
+    const device = getSessionDevice(events, sessionId);
+
+    const color =
+      device === "mobile"
+        ? "font-figtree"
+        : device === "tablet"
+        ? "font-figtree"
+        : device === "desktop"
+        ? "font-figtree"
+        : "text-gray-500";
+
+    return (
+      <span className={`font-figtree  capitalize ${color}`}>
+        {device}
+      </span>
+    );
+  },
+}),
+
 
     // Location
     columnHelper.display({
