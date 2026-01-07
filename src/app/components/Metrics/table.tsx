@@ -84,16 +84,7 @@ function getSessionDevice(events: Events[], sessionId: string) {
 
   const device = parseDeviceFromUA(event?.userAgent);
 
-  console.log(
-    "[getSessionDevice]",
-    "session:",
-    sessionId,
-    "userAgent:",
-    event?.userAgent,
-    "device:",
-    device
-  );
-
+  
   return device;
 }
 

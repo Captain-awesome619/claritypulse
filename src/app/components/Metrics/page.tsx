@@ -27,6 +27,7 @@ import { TbBulbFilled } from "react-icons/tb";
 import Modal from 'react-modal';
 import Profile from "./profile";
 import PulseLoader from "react-spinners/PulseLoader";
+import Assistant from "./ai-assistant";
 type Events = {
   userId: string;
   isReturningUser: any;
@@ -62,11 +63,42 @@ function parseBrowser(userAgent?: string) {
   return "Unknown";
 }
 
+
+
+function parseDeviceFromUA(userAgent?: string) {
+  if (!userAgent) return "unknown";
+
+  const ua = userAgent.toLowerCase();
+
+  if (/mobile|iphone|ipod|android.*mobile|windows phone/.test(ua)) {
+    return "mobile";
+  }
+  if (/ipad|tablet|android(?!.*mobile)/.test(ua)) {
+    return "tablet";
+  }
+  return "desktop";
+}
+
+interface AvgMetrics {
+  clicks: number;
+  scrolls: number;
+  mouseMoves: number;
+  scrollDepth: number;
+  sessionDurationSec: number;
+}
+
+
+
+
+
 export default function AnalyticsDashboard() {
 
  const [domtoimage, setDomToImage] = useState<any>(null);
 const [showNotice, setShowNotice] = useState(false);
 const [isLoading, setIsLoading] = useState(true);
+
+
+
 
 const supabase = getSupabaseClient();
   useEffect(() => {
@@ -91,6 +123,18 @@ const [isClearing, setIsClearing] = useState(false);
 const [dat, setDat] =useState<any>(null)
 const [newUsersCount, setNewUsersCount] = useState(0);
 const [stepDirection, setStepDirection] = useState<any>(); 
+ const [formerdate, setFormerdate] = useState<any>(); 
+ const [laterdate, setLaterdate] = useState<any>(); 
+const [browserCount, setBrowserCount] = useState<Record<string, number>>({})
+const [deviceCount, setDeviceCount] = useState<Record<string, number>>({});
+const [avgMetrics, setAvgMetrics] = useState<AvgMetrics>({
+  clicks: 0,
+  scrolls: 0,
+  mouseMoves: 0,
+  scrollDepth: 0,
+  sessionDurationSec: 0,
+});
+
 
  useEffect(() => {
   const fetchEvents = async () => {
@@ -203,7 +247,7 @@ const [chartData, setChartData] = useState<{ date: string; users: number }[]>([]
 useEffect(() => {
   if (!allEvents.length) return;
 
-  // Sort all events by timestamp ascending
+ 
   const sortedEvents = [...allEvents].sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
@@ -300,24 +344,129 @@ useEffect(() => {
 
   const rows = stepDirection as EventRow[];
 
-  // Group rows by session_id
+ 
   const grouped: Record<string, EventRow[]> = rows.reduce((acc, row) => {
     if (!acc[row.session_id]) acc[row.session_id] = [];
     acc[row.session_id].push(row);
     return acc;
   }, {} as Record<string, EventRow[]>);
 
-  // Count sessions where the FIRST row has is_returning_user = false
+  
   const newSessionCount = Object.values(grouped).filter((sessionRows) => {
     return sessionRows[0].is_returning_user === false;
   }).length;
 
-  console.log("New users (unique sessions):", newSessionCount);
+
   setNewUsersCount(newSessionCount);
+  
+if (allEvents.length === 0) {
+    setFormerdate("None");
+    setLaterdate("None");
+    return;
+  }
+
+  // Sort events by timestamp ascending
+  const sortedEvents = [...allEvents].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+
+  setFormerdate(new Date(sortedEvents[0].timestamp).toLocaleDateString());
+  setLaterdate(new Date(sortedEvents[sortedEvents.length - 1].timestamp).toLocaleDateString());
+
+             
 }, [stepDirection]);
 
+useEffect(() => {
+ console.log("Former date:", formerdate);
+              console.log("Later date:", laterdate);
+}, [formerdate, laterdate])
 
 
+
+useEffect(() => {
+  const browserCounts: Record<string, number> = {};
+  const deviceCounts: Record<string, number> = {};
+
+  const seenBrowserSessions: Record<string, Set<string>> = {}; // browser → session IDs
+  const seenDeviceSessions: Record<string, Set<string>> = {}; // device → session IDs
+
+  allEvents.forEach((event) => {
+    const sessionId = event.sessionId;
+
+    // --- Browser ---
+    const browser = parseBrowser(event.userAgent);
+
+    if (!seenBrowserSessions[browser]) seenBrowserSessions[browser] = new Set();
+
+    if (!seenBrowserSessions[browser].has(sessionId)) {
+      browserCounts[browser] = (browserCounts[browser] || 0) + 1;
+      seenBrowserSessions[browser].add(sessionId);
+    }
+    const device = parseDeviceFromUA(event.userAgent);
+    if (!seenDeviceSessions[device]) seenDeviceSessions[device] = new Set();
+    if (!seenDeviceSessions[device].has(sessionId)) {
+      deviceCounts[device] = (deviceCounts[device] || 0) + 1;
+      seenDeviceSessions[device].add(sessionId);
+    }
+  });
+
+  setBrowserCount(browserCounts);
+  setDeviceCount(deviceCounts);
+}, [allEvents]);
+
+
+useEffect(() => {
+  if (!allEvents || allEvents.length === 0) return;
+  const sessions: Record<string, typeof allEvents> = {};
+  allEvents.forEach((event) => {
+    if (!sessions[event.sessionId]) sessions[event.sessionId] = [];
+    sessions[event.sessionId].push(event);
+  });
+
+  const sessionIds = Object.keys(sessions);
+  const totalSessions = sessionIds.length;
+
+  let totalClicks = 0;
+  let totalScrolls = 0;
+  let totalMouse = 0;
+  let totalScrollDepth = 0;
+  let totalSessionDuration = 0;
+
+  sessionIds.forEach((sessionId) => {
+    const events = sessions[sessionId];
+
+    totalClicks += events.filter((e) => e.type === "click").length;
+    totalScrolls += events.filter((e) => e.type === "scroll").length;
+    totalMouse += events.filter((e) => e.type === "mouse").length;
+
+    
+    const scrollEvents = events.filter((e) => e.type === "scroll");
+    const sessionScrollDepth =
+      scrollEvents.reduce((acc, s) => acc + (s.payload?.scrollDepth ?? 0), 0) /
+      (scrollEvents.length || 1);
+    totalScrollDepth += sessionScrollDepth;
+
+   
+    const first = new Date(events[0].timestamp).getTime();
+    const last = new Date(events[events.length - 1].timestamp).getTime();
+    totalSessionDuration += Math.round((last - first) / 1000);
+  });
+
+  setAvgMetrics({
+    clicks: totalClicks / totalSessions,
+    scrolls: totalScrolls / totalSessions,
+    mouseMoves: totalMouse / totalSessions,
+    scrollDepth: totalScrollDepth / totalSessions,
+    sessionDurationSec: totalSessionDuration / totalSessions,
+  });
+}, [allEvents]);
+
+
+useEffect(() => {
+  console.log("Browser counts:", browserCount);
+  console.log("Device counts:", deviceCount);
+  console.log("Average Metrics:", avgMetrics);
+}, [browserCount])
   return (
     <div className="flex h-screen overflow-hidden bg-gray-200">
 
@@ -464,15 +613,24 @@ alt="logo"
         <p className="text-lg font-semibold text-gray-700 font-figtree">
           👥 Total number of visits from{" "}
           <span className="text-blue-600 font-semibold font-figtree">
-            {allEvents.length > 0
-              ? new Date(allEvents[0].timestamp).toLocaleDateString()
-              : "No visitors yet"}{" "}
-            to{" "}
-            {allEvents.length > 0
-              ? new Date(
-                  allEvents[allEvents.length - 1].timestamp
-                ).toLocaleDateString()
-              : "No visitors yet"}
+          {allEvents.length > 0 ? (
+  (() => {
+    const sorted = [...allEvents].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    const firstDate = new Date(sorted[0].timestamp).toLocaleDateString();
+    const lastDate = new Date(sorted[sorted.length - 1].timestamp).toLocaleDateString();
+
+    return (
+      <span>
+        {firstDate} to {lastDate}
+      </span>
+    );
+  })()
+) : (
+  <span>No visitors yet</span>
+)}
           </span>{" "}
           is{" "}
           <span className=" text-[20px] lg:text-2xl text-purple-600 font-bold font-mono">
@@ -576,10 +734,6 @@ alt="logo"
  )}
   </>
         )}
-
-
-
-
         {activePage === "Profile" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5 items-center justify-center">
            <Profile />
@@ -588,17 +742,14 @@ alt="logo"
 
         {activePage === "AI-assistant" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Feature coming soon</h2>
-            <p className="text-lg text-gray-700">The AI assistant will be ready soon</p>
+          <Assistant formerdate={formerdate} laterdate={laterdate} browsercount={browserCount} devicecount={deviceCount} avgMetrics={avgMetrics} uniqueVisitors={uniqueVisitors} newuserscount={newUsersCount} />
           </div>
         )}
-
         {activePage === "Settings" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
           <Settings />
           </div>
         )}
-
       </div>
       <Modal
   isOpen={isClearModalOpen}
