@@ -15,6 +15,7 @@ interface AssistantProps {
     scrollDepth: number;
     sessionDurationSec: number;
   };
+  location :  Record<string, number>;
 }
 
 const Assistant: React.FC<AssistantProps> = ({
@@ -25,6 +26,7 @@ const Assistant: React.FC<AssistantProps> = ({
   browsercount,
   devicecount,
   avgMetrics,
+  location,
 }) => {
   const [loading, setLoading] = useState(false);
   const [insight, setInsight] = useState<string | null>(null);
@@ -45,6 +47,7 @@ const Assistant: React.FC<AssistantProps> = ({
         new: newuserscount,
         returning: uniqueVisitors - newuserscount,
       },
+location : location,
       devices: devicecount,
       browsers: browsercount,
       engagement: {

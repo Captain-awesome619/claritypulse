@@ -35,7 +35,7 @@ type Events = {
   timestamp: string;
   sessionId: string;
   userAgent?: string;
-  payload?: { scrollDepth?: number; eventType?: string };
+  payload?: { scrollDepth?: number; eventType?: string; location?: { city?: string; country_name?: string } };
 };
 
 function parseBrowser(userAgent?: string) {
@@ -134,7 +134,7 @@ const [avgMetrics, setAvgMetrics] = useState<AvgMetrics>({
   scrollDepth: 0,
   sessionDurationSec: 0,
 });
-
+  const [locations, setLocations] = useState<Record<string, number>>({});
 
  useEffect(() => {
   const fetchEvents = async () => {
@@ -409,7 +409,27 @@ useEffect(() => {
       seenDeviceSessions[device].add(sessionId);
     }
   });
+   const counts: Record<string, number> = {};
+    const seenSessions: Record<string, Set<string>> = {}; // location -> set of sessionIds
 
+    events.forEach((event) => {
+      const sessionId = event.sessionId;
+      const loc = event.payload?.location;
+      const locationString = loc
+        ? loc.city && loc.country_name
+          ? `${loc.city}, ${loc.country_name}`
+          : loc.city || loc.country_name || "Unknown"
+        : "Unknown";
+
+      if (!seenSessions[locationString]) seenSessions[locationString] = new Set();
+
+      // Count only if this session hasn't been counted for this location
+      if (!seenSessions[locationString].has(sessionId)) {
+        counts[locationString] = (counts[locationString] || 0) + 1;
+        seenSessions[locationString].add(sessionId);
+      }
+    });
+  setLocations(counts);
   setBrowserCount(browserCounts);
   setDeviceCount(deviceCounts);
 }, [allEvents]);
@@ -461,11 +481,12 @@ useEffect(() => {
   });
 }, [allEvents]);
 
+ 
+
 
 useEffect(() => {
-  console.log("Browser counts:", browserCount);
-  console.log("Device counts:", deviceCount);
-  console.log("Average Metrics:", avgMetrics);
+  console.log(".");
+  
 }, [browserCount])
   return (
     <div className="flex h-screen overflow-hidden bg-gray-200">
@@ -713,8 +734,8 @@ alt="logo"
         stroke="purple"
         strokeWidth={3}
         dot={{ r: 4 }}
-        isAnimationActive={true}      // Enable animation
-        animationDuration={800}       // Animation duration in ms
+        isAnimationActive={true}      
+        animationDuration={800}    
       />
     </LineChart>
   </ResponsiveContainer>
@@ -742,7 +763,7 @@ alt="logo"
 
         {activePage === "AI-assistant" && (
           <div className="bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-8 w-full max-w-xl grid gap-5">
-          <Assistant formerdate={formerdate} laterdate={laterdate} browsercount={browserCount} devicecount={deviceCount} avgMetrics={avgMetrics} uniqueVisitors={uniqueVisitors} newuserscount={newUsersCount} />
+          <Assistant formerdate={formerdate} laterdate={laterdate} browsercount={browserCount} devicecount={deviceCount} avgMetrics={avgMetrics} uniqueVisitors={uniqueVisitors} newuserscount={newUsersCount} location={locations} />
           </div>
         )}
         {activePage === "Settings" && (
