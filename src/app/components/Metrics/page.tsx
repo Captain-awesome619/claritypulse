@@ -142,7 +142,7 @@ const [avgMetrics, setAvgMetrics] = useState<AvgMetrics>({
 setIsLoading(true);
  const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
-      console.log("Error fetching user:", userError);
+     alert("Error fetching user information.");
       return;
     }
 
@@ -154,7 +154,7 @@ const { data: project, error: projectError } = await supabase
   .single();
 
 if (projectError || !project) {
-  console.log("Error fetching project:", projectError);
+alert("Error fetching project information.");
   return;
 }
 if (project) {
@@ -162,7 +162,7 @@ if (project) {
   
 }
 
-console.log("Fetched project data:", dat);
+
 
     const { data, error } = await supabase
       .from("events")
@@ -174,7 +174,7 @@ console.log("Fetched project data:", dat);
       return;
     }
 setStepDirection(data)
-console.log("Fetched events data stepdirection:", stepDirection);
+
 
     const flattenedEvents: Events[] = data?.flatMap((item: any) =>
       item.events.map((e: any) => ({
@@ -205,7 +205,7 @@ console.log("Fetched events data stepdirection:", stepDirection);
 
 useEffect(() => {
   if (dat) {
-    console.log("dat state updated:", dat);
+    console.log("updated:");
   }
 }, [dat]);
 useEffect(() => {
@@ -317,7 +317,7 @@ const clearEventData = async () => {
   setIsClearing(false);
 
   if (error) {
-    console.log("Error clearing events:", error);
+  alert("Error clearing event data: " + error.message);
     return;
   }
 
@@ -377,8 +377,8 @@ if (allEvents.length === 0) {
 }, [stepDirection]);
 
 useEffect(() => {
- console.log("Former date:", formerdate);
-              console.log("Later date:", laterdate);
+ console.log(".");
+           
 }, [formerdate, laterdate])
 
 
@@ -423,7 +423,7 @@ useEffect(() => {
 
       if (!seenSessions[locationString]) seenSessions[locationString] = new Set();
 
-      // Count only if this session hasn't been counted for this location
+     
       if (!seenSessions[locationString].has(sessionId)) {
         counts[locationString] = (counts[locationString] || 0) + 1;
         seenSessions[locationString].add(sessionId);

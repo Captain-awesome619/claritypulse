@@ -39,16 +39,16 @@ useEffect(() => {
       } = await supabase.auth.getUser();
 
       if (authError) {
-        console.log("Auth error:", authError);
+     alert("Error fetching user: " + authError.message);
         return;
       }
 
       if (!authUser) {
-        console.log("No Supabase user logged in");
+      alert("User not authenticated.");
         return;
       }
 
-      console.log("User ID:", authUser.id);
+   
 setauth(authUser.id);
       // ------------------------------------
       // 2. Fetch PROFILE for this user
@@ -60,11 +60,11 @@ setauth(authUser.id);
         .single();
 
       if (profileError) {
-        console.log("Profile fetch error:", profileError.message);
+      alert("Error fetching profile: " + profileError.message);
       } else {
-        console.log("Profile:", profileData);
+     
        setProf(profileData); 
-console.log('this is prof', prof)
+
       }
  
       // ------------------------------------
@@ -75,11 +75,11 @@ console.log('this is prof', prof)
         .maybeSingle();
 
       if (projectError) {
-        console.log("Project fetch error:", projectError.message);
+        alert("Error fetching project: " + projectError.message);
         return;
       }
 
-      console.log("Project snippet:", project?.snippet);
+   
 
       if (project) {
         setSite(project.domain || "");

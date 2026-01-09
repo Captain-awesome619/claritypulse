@@ -47,16 +47,16 @@ const navigate = useRouter()
       } = await supabase.auth.getUser();
 
       if (authError) {
-        console.log("Auth error:", authError);
+      alert("Error fetching user: " + authError.message);
         return;
       }
 
       if (!authUser) {
-        console.log("No Supabase user logged in");
+       alert("User not authenticated.");
         return;
       }
 
-      console.log("User ID:", authUser.id);
+    
 
       // ------------------------------------
       // 2. Fetch PROFILE for this user
@@ -154,7 +154,7 @@ const navigate = useRouter()
         setError(data.error || "Something went wrong.");
         return;
       }
-console.log('this is data', data)
+
       setFeedback(data?.project?.project_name || "Project created successfully!");
       setSnippet(data?.snippet || "");
     
@@ -187,13 +187,13 @@ async function viewMetrics() {
       .maybeSingle();
 
     if (projectError) {
-      console.log("Could not fetch project:", projectError.message);
+   alert("Error fetching project: " + projectError.message);
       setLoading(false);
       return;
     }
 
     if (!project) {
-      console.log("No project found for this user.");
+     
       setLoading(false);
       return;
     }
@@ -213,9 +213,9 @@ async function viewMetrics() {
       return;
     }
 
-    // If no events → stop loader → show modal
+    
     if (!events || events.length === 0) {
-      console.log("No events yet.");
+     
       setLoading(false);
 
       // delay 300ms so loader fades first
@@ -244,7 +244,7 @@ async function deleteProjectAndEvents() {
     } = await supabase.auth.getUser();
 
     if (!authUser) {
-      console.log("Not authenticated");
+    alert("User not authenticated.");
       setDeleting(false);
       return;
     }

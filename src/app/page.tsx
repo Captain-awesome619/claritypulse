@@ -88,55 +88,52 @@ const router = useRouter();
  const { setProfile,setUser } = useProfileStore();
 
 
-
- const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+const handleSubmit = async (
+  e: FormEvent<HTMLFormElement>
+): Promise<void> => {
   e.preventDefault();
-  if (!validateAll()) return;
+ 
 
   try {
     setLoading(true);
 
     if (account) {
-      // Login branch
+      // ---------- LOGIN ----------
       const { data, error } = await supabase.auth.signInWithPassword({
         email: form.email.trim(),
         password: form.password,
       });
 
-      if (error) {
-        console.error("Login error:", error.message);
-        setErrors({ email: "Invalid credentials or account inactivated" });
+      if (error || !data.user) {
+        alert("Invalid Credentials");
         return;
       }
 
-      if (data.user) {
-        setUser(data);
-        setProfile(data.user);
-        await new Promise(res => setTimeout(res, 500));
-        router.push('/components/dashboard');
-      }
+      setUser(data);
+      setProfile(data.user);
+      await new Promise(res => setTimeout(res, 500));
+      router.push("/components/dashboard");
 
     } else {
-      // Signup branch
+      // ---------- SIGNUP ----------
+       if (!validateAll()) return;
       const { data, error } = await supabase.auth.signUp({
         email: form.email.trim(),
         password: form.password,
       });
 
       if (error) {
-        console.error("Signup error:", error.message);
         alert(error.message);
         return;
       }
 
       if (!data.user) {
-        alert("Signup initiated. Please check your email to VERIFY and ACTIVATE your account.");
+        alert("Signup initiated. Please check your email to verify your account.");
         return;
       }
 
       const userId = data.user.id;
 
-      // Check if profile already exists (safety for deleted / re-signed-up users)
       const { data: existingProfile } = await supabase
         .from("profiles")
         .select("*")
@@ -155,17 +152,15 @@ const router = useRouter();
           ]);
 
         if (profileError) {
-          console.error("Profile insert error:", profileError.message);
-          alert("Error saving profile info: " + profileError.message);
+          alert("Error saving profile info");
           return;
         }
       }
 
-      alert("Signup successful! Please check your email to verify and activate your account.");
+      alert("Signup successful! Please verify your email.");
     }
-
   } catch (err) {
-    console.error("Unexpected error:", err);
+    console.error(err);
     alert("An unexpected error occurred. Please try again.");
   } finally {
     setLoading(false);
@@ -309,7 +304,11 @@ const router = useRouter();
                     />
                     <IoMdEye size={20} color="black" className="ml-auto mr-2 cursor-pointer"    onClick={() => setShowPassword((prev) => !prev)} />
                   </div>
-                  
+                    {errors.name && (
+                    <p className="text-red-500 text-[14px] mt-1">
+                      {errors.name}
+                    </p>
+                  )}
                   <h4 className="text-black font-figtree font-semibold text-[15px] ml-auto mt-2 cursor-pointer"
                     onClick={() => setForgotModalOpen(true)}
                   >
