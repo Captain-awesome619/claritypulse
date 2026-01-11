@@ -9,7 +9,6 @@ import {
   YAxis,
   ResponsiveContainer,
   CartesianGrid,
-  
 } from "recharts";
 import Settings from "./settings";
 import { useProfileStore } from "@/store/userProfile";
@@ -28,6 +27,7 @@ import Modal from 'react-modal';
 import Profile from "./profile";
 import PulseLoader from "react-spinners/PulseLoader";
 import Assistant from "./ai-assistant";
+import { useRouter } from "next/navigation";
 type Events = {
   userId: string;
   isReturningUser: any;
@@ -97,7 +97,7 @@ export default function AnalyticsDashboard() {
 const [showNotice, setShowNotice] = useState(false);
 const [isLoading, setIsLoading] = useState(true);
 
-
+const navigate = useRouter();
 
 
 const supabase = getSupabaseClient();
@@ -315,6 +315,7 @@ const clearEventData = async () => {
     .eq("project_id", link);
 
   setIsClearing(false);
+   navigate.push("/components/dashboard");
 
   if (error) {
   alert("Error clearing event data: " + error.message);
