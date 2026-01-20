@@ -96,11 +96,11 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
       <div className='flex items-center justify-between '>
     <div className='grid mb-6 ml-4 gap-4'>
 <FaLongArrowAltLeft size={25} className=" cursor-pointer" onClick={Back}/>
-   <h4 className='font-thin font-figtree text-[15px] text-purple-600 '>User {""}-  {session}</h4>
+   <h4 className='font-figtree text-[15px] text-[#29C7AC] font-bold '>User {""}-  {session}</h4>
     </div>
         <button
               className="lg:px-4 lg:py-3 px-1 py-3 rounded-3xl 
-              bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
+              bg-[#0A3D62]
               shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center lg:gap-2 gap-2"
               onClick={() => setShowModal(true)}
             >
@@ -111,7 +111,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
             </button>
     </div>
       <div className='grid grid-cols-2 lg:grid-cols-3 place-items-center gap-6'>
-      {/* CARDS */}
+     
       
        
 
@@ -119,7 +119,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
           <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
       Mouse Interactions
     </h3>
     <FaMouse className="text-gray-600 text-lg" />
@@ -127,7 +127,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
       {mouseCount}
     </div>
   </div>
@@ -138,14 +138,14 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
           <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
     Avg Scroll Depth(px)
     </h3>
     <FaScroll className="text-gray-600 text-lg" />
   </div>
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
       {mouseCount}{avgScroll.toFixed(1)}
     </div>
   </div>
@@ -155,7 +155,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
           <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
     Number of Clicks
     </h3>
     <LuMousePointerClick className="text-gray-600 text-lg" />
@@ -163,7 +163,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
       {count}
     </div>
   </div>
@@ -175,7 +175,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
          <div className="lg:w-60 lg:h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
-    <h3 className="font-figtree font-semibold text-gray-700 text-sm">
+    <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
      Session Length {""}in {unit}
     </h3>
     <FaClock className="text-gray-600 text-lg" />
@@ -183,14 +183,14 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-purple-600">
+    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
       {displayDuration  } 
     </div>
   </div>
    <div className="flex justify-end ite">
         <button
           onClick={() => setInMinutes(!inMinutes)}
-          className="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition cursor-pointer"
+          className="px-3 py-1 text-sm text-[#29C7AC] font-bold bg-[#0A3D62] rounded-full hover:bg-purple-200 transition cursor-pointer"
         >
           {inMinutes ? "Show in seconds" : "Show in minutes"}
         </button>

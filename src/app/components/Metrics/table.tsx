@@ -39,7 +39,7 @@ type Events = {
 type StepDirection = {
   session_id: any;
   sessionId: string;
-  is_returning_user: boolean; // true = returning, false = new user
+  is_returning_user: boolean; 
   location?: {
     city?: string;
     country_name?: string;
@@ -134,7 +134,7 @@ const Table = ({ events, decrement, stepdirection }: TableProps) => {
     columnHelper.accessor("sessionId", {
       header: () => (
         <div className="flex items-center gap-2 font-figtree">
-          <FiUser className="text-blue-600" />
+          <FiUser className="text-[#0A3D62]" />
           Session ID
         </div>
       ),
@@ -148,7 +148,7 @@ const Table = ({ events, decrement, stepdirection }: TableProps) => {
           className="flex items-center gap-2 cursor-pointer select-none"
           onClick={() => column.toggleSorting()}
         >
-          <FiClock className="text-purple-600" />
+          <FiClock className="text-[#0A3D62]" />
           <span className="font-figtree"> Last Date Visited</span>
           {column.getIsSorted() === "asc" && <FaSortUp className="text-purple-600" />}
           {column.getIsSorted() === "desc" && <FaSortDown className="text-purple-600" />}
@@ -174,7 +174,7 @@ const Table = ({ events, decrement, stepdirection }: TableProps) => {
     columnHelper.accessor("userAgent", {
       header: () => (
         <div className="flex items-center gap-2 font-figtree">
-          <CiGlobe size={15} className="text-purple-500" />
+          <CiGlobe size={15} className="text-[#0A3D62]" />
           Browser
         </div>
       ),
@@ -217,12 +217,12 @@ columnHelper.display({
       id: "location",
       header: () => (
         <div className="flex items-center gap-2 font-figtree">
-          <FaLocationDot className="text-purple-600" />
+          <FaLocationDot className="text-[#0A3D62]" />
           Location
         </div>
       ),
       cell: (info) => {
-        // For this session row, find first event with location
+       
         const eventsForSession = events.filter(
           (e) => e.sessionId === info.row.original.sessionId
         );
@@ -252,7 +252,7 @@ columnHelper.display({
     return (
       <span
         className={`font-figtree font-semibold ${
-          isReturning ? "text-gray-700" : "text-green-500"
+          isReturning ? "text-gray-700 font-bold" : "text-[#29C7AC] font-bold"
         }`}
       >
         {isReturning ? "Returning" : "New User"}
@@ -276,9 +276,9 @@ columnHelper.display({
         return (
           <button
             onClick={() => handleViewMore(sessionId)}
-            className="px-3 py-1 font-mono font-bold
-        bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
-        shadow-md text-white rounded-lg hover:bg-blue-600 text-sm flex items-center gap-1 cursor-pointer"
+            className="px-2 py-2 font-mono font-bold
+        bg-[#0A3D62]
+        shadow-md text-white rounded-lg hover:bg-[#29C7AC] hover:text-[#0A3D62] text-sm flex items-center gap-1 cursor-pointer"
           >
             View More <FiExternalLink />
           </button>
@@ -318,7 +318,7 @@ columnHelper.display({
             onClick={decrement}
           />
           <div className="p-5 bg-white rounded-2xl shadow-md border border-gray-200 ">
-            <h2 className="text-xl font-bold mb-4 text-gray-800 font-figtree">
+            <h2 className="text-xl font-bold mb-4 text-[#0A3D62] font-figtree">
               Session Activity
             </h2>
 

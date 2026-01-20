@@ -15,7 +15,7 @@ import { useProfileStore } from "@/store/userProfile";
 import { getSupabaseClient } from "@/lib/supaBaseClient";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
-import logo from '../../../assests/transparentbg.png'
+import logo from '../../../assests/backgroundlogo.png'
 import Image from "next/image";
 import { FaRegChartBar, FaUser, FaRobot } from "react-icons/fa"
 import { IoSettings } from "react-icons/io5";
@@ -411,7 +411,7 @@ useEffect(() => {
     }
   });
    const counts: Record<string, number> = {};
-    const seenSessions: Record<string, Set<string>> = {}; // location -> set of sessionIds
+    const seenSessions: Record<string, Set<string>> = {};
 
     events.forEach((event) => {
       const sessionId = event.sessionId;
@@ -496,7 +496,7 @@ useEffect(() => {
         className={`
           fixed top-0 left-1/2 transform -translate-x-1/2 
           w-full max-w-xl 
-          bg-purple-700 text-white rounded-b-3xl shadow-lg
+          bg-[#0A3D62] text-white rounded-b-3xl shadow-lg
           px-6 py-4 flex items-start justify-between gap-4
           transition-all duration-500 ease-in-out
           ${showNotice ? "translate-y-0 opacity-100" : "-translate-y-32 opacity-0"}
@@ -525,7 +525,7 @@ useEffect(() => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-linear-to-b from-blue-600 via-purple-600 to-violet-700 text-white w-64 p-4 flex flex-col transform transition-transform duration-300 z-50
+        className={`fixed top-0 left-0 h-full bg-[#0A3D62] text-white w-64 p-4 flex flex-col transform transition-transform duration-300 z-50
           ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div className="flex items-start justify-start">
@@ -545,8 +545,8 @@ alt="logo"
       onClick={() => setActivePage(item.name)}
       className={`cursor-pointer py-2 px-3 rounded-xl font-medium font-figtree transition-all
         ${activePage === item.name
-          ? "bg-linear-to-r from-blue-500 via-purple-500 to-violet-600 shadow-md"
-          : "hover:bg-blue-500/40"}`}
+          ? "bg-linear-to-r from-blue-500 via-[#29C7AC] to-violet-600 shadow-md"
+          : "hover:bg-[#29C7AC]"}`}
     >
       <div className="flex items-center justify-between gap-2">
           <span>{item.name}</span>
@@ -562,8 +562,8 @@ alt="logo"
             onClick={() => setActivePage("Settings")}
             className={`cursor-pointer py-2 px-3 rounded-xl font-medium transition-all items-center justify-between flex
               ${activePage === "Settings"
-                ? "bg-linear-to-r from-blue-500 via-purple-500 to-violet-600 shadow-md"
-                : "hover:bg-blue-500/40"}`}
+                ? "bg-linear-to-r from-blue-500 via-[#0A3D62] to-violet-600 shadow-md"
+                : "hover:bg-[#29C7AC]"}`}
           >
             Settings
             <IoSettings />
@@ -594,7 +594,7 @@ alt="logo"
         <>
         {isLoading ? (
       <div className="flex items-center justify-center h-[60vh]">
-        <PulseLoader color="#7c3aed" size={15} />
+        <PulseLoader color="#0A3D62" size={15} />
       </div>
     ) : (
         <>
@@ -611,7 +611,7 @@ alt="logo"
       "
     >
       <div className="flex lg:flex-row flex-col lg:items-center lg:justify-between">
-      <h2 className="text-2xl font-bold text-gray-700 mb-4 ">
+      <h2 className="text-2xl font-bold text-[#0A3D62] mb-4 ">
         {dat} Report
       </h2>
       {showSessionLimit && (
@@ -632,7 +632,7 @@ alt="logo"
 </div>
       <div className="space-y-5">
         {/* Visitors */}
-        <p className="text-lg font-semibold text-gray-700 font-figtree">
+        <p className="text-lg font-semibold text-[#0A3D62]  font-figtree">
           👥 Total number of visits from{" "}
           <span className="text-blue-600 font-semibold font-figtree">
           {allEvents.length > 0 ? (
@@ -645,7 +645,7 @@ alt="logo"
     const lastDate = new Date(sorted[sorted.length - 1].timestamp).toLocaleDateString();
 
     return (
-      <span>
+      <span className="text-[#29C7AC] font-bold">
         {firstDate} to {lastDate}
       </span>
     );
@@ -655,15 +655,15 @@ alt="logo"
 )}
           </span>{" "}
           is{" "}
-          <span className=" text-[20px] lg:text-2xl text-purple-600 font-bold font-mono">
+          <span className=" text-[20px] lg:text-2xl text-[#0A3D62] font-bold font-mono">
             {uniqueVisitors}
           </span>
-          <br></br><span className=" text-[12px] flex items-center justify-center font-bold text-blue-600 font-figtree">(latter date is the date the earliest visitor in this interval visited the site)</span>
+          <br></br><span className=" text-[12px] flex items-center justify-center font-bold text-[#29C7AC] font-figtree">(latter date is the date the earliest visitor in this interval visited the site)</span>
         </p>
 
 <p className="text-lg font-semibold text-gray-700 font-figtree">
   🆕 Number of new users in this timeframe:{" "}
-  <span className="text-green-600 font-bold font-mono text-[20px] lg:text-2xl">
+  <span className="text-[#0A3D62] font-bold font-mono text-[20px] lg:text-2xl">
     {newUsersCount}
   </span>
 </p>
@@ -671,7 +671,7 @@ alt="logo"
         
         <button
           className="px-3 py-2 rounded-3xl 
-          bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
+          bg-[#0A3D62]
           shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center gap-2"
           onClick={() => setStep((prev) => prev + 1)}
         >
@@ -686,21 +686,21 @@ alt="logo"
     {/* ================== CHART SECTION ================== */}
    <div className="mt-8 bg-white/80 backdrop-blur rounded-3xl shadow-[0_0_25px_rgba(0,0,0,0.15)] p-6 w-full max-w-2xl ">
   <div className="flex justify-between items-center mb-4">
-    <h3 className="text-xl font-bold text-gray-900">Visitor Trend</h3>
+    <h3 className="text-xl font-bold text-[#0A3D62]">Visitor Trend</h3>
     <div className =" flex items-center gap-2">
     <select
-      className="bg-purple-600 text-white  bg rounded-xl px-3  py-1 cursor-pointer"
+      className="bg-[#0A3D62]  text-white font-bold bg rounded-xl px-3  py-1 cursor-pointer"
       value={timeRange}
       onChange={(e) => setTimeRange(e.target.value as any)}
     >
-      <option value="all" className="cursor-pointer ">From First User</option>
+      <option value="all" className="cursor-pointer  ">From First User</option>
       <option value="7" className="cursor-pointer">Last 7 Days</option>
       <option value="3" className="cursor-pointer">Last 3 Days</option>
       <option value="1" className="cursor-pointer">Last 1 Day</option>
     </select>
      <button
           onClick={handleExportPNG}
-          className="px-4 py-2 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700 transition cursor-pointer"
+          className="px-4 py-2 text-white rounded-xl shadow hover:bg-blue-600 transition cursor-pointer bg-[#0A3D62] font-bold hover:text-white"
         >
           Export
         </button>
@@ -732,7 +732,7 @@ alt="logo"
       <Line
         type="monotone"
         dataKey="users"
-        stroke="purple"
+        stroke="#0A3D62"
         strokeWidth={3}
         dot={{ r: 4 }}
         isAnimationActive={true}      

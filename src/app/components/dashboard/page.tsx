@@ -292,7 +292,7 @@ async function deleteProjectAndEvents() {
       <div className="fixed inset-0 flex items-center justify-center  backdrop-blur-md z-50  h-screen w-screen flex-col  bg-no-repeat bg-cover bg-bottom-left "
        style={{ backgroundImage: "url('/dashboardbg2.jpg')" }}
       >
-        <PulseLoader color="purple" size={15} />
+        <PulseLoader color="#0A3D62" size={15} />
       </div>
     );
   } 
@@ -303,7 +303,7 @@ async function deleteProjectAndEvents() {
     >
 {loading && (
   <div className="fixed inset-0  bg-opacity-70 backdrop-blur-md flex items-center justify-center z-50">
-    <PulseLoader color="blue" size={15} />
+    <PulseLoader color="#0A3D62" size={15} />
   </div>
 )}
 
@@ -316,7 +316,7 @@ async function deleteProjectAndEvents() {
 <h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {site ? <span>{site}</span> : <span>{domain}</span>}</h3>
 <div className=" flex flex-col gap-3">
 <div >
-<h3 className="text-[13px] bg-linear-to-r from-purple-500 via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px]">
+<h3 className="text-[13px] bg-linear-to-r from-[#29C7AC] via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px]">
   {snippet}
 
 </h3>
@@ -345,7 +345,7 @@ async function deleteProjectAndEvents() {
   >
   <button
               className="lg:px-4 lg:py-3 px-3 py-3 rounded-3xl 
-              bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
+              bg-linear-to-r from-blue-500 via-[#29C7AC] to-violet-600
               shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center lg:gap-2 gap-2"
             >
               <h4 className=" text-white font-mono font-bold text-[12px] lg:text-[13px] ">View Demo</h4>

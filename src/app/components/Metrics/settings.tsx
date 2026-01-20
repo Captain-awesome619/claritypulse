@@ -84,7 +84,7 @@ const supabase = getSupabaseClient();
           onClick={handleLogout}
           className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold flex justify-center cursor-pointer"
         >
-          {loading ? <PulseLoader size={8} /> : "Log Out"}
+          {loading ? <PulseLoader size={8} color="#0A3D62" /> : "Log Out"}
         </button>
 
         <button
@@ -112,7 +112,7 @@ const supabase = getSupabaseClient();
           onClick={handleDelete}
           className="w-full bg-red-600 text-white py-2 rounded-lg font-bold flex justify-center cursor-pointer"
         >
-          {loading ? <PulseLoader size={8} /> : "Delete Account"}
+          {loading ? <PulseLoader size={8} color="#0A3D62" /> : "Delete Account"}
         </button>
 
         <button

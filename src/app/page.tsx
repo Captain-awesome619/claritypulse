@@ -245,9 +245,8 @@ const handleSubmit = async (
       <div className="flex items-center justify-center overflow-hidden">
         <div
           className="relative lg:w-[400px] w-[350px] mb-3 min-h-[600px] h-auto border-2 border-transparent rounded-3xl z-40 bg-cover bg-bottom-right bg-no-repeat lg:p-12 
-          shadow-[0_10px_10px_-10px_rgba(186,85,255,0.6),0_15px_20px_-1px_rgba(255,105,180,0.6),0_40px_90px_-20px_rgba(65,105,225,0.6)] 
-          flex flex-col items-center gap-4 overflow-hidden
-          transition-all duration-700 ease-in-out hover:shadow-[0_10px_20px_-5px_rgba(30,144,255,0.8),0_20px_40px_-10px_rgba(65,105,225,0.7)]"
+         shadow-[0_10px_10px_-10px_rgba(10,61,98,0.6),0_15px_20px_-1px_rgba(10,61,98,0.45),0_40px_90px_-20px_rgba(10,61,98,0.35)]
+flex flex-col items-center gap-4 overflow-hidden  transition-all duration-700 ease-in-out hover:shadow-[0_10px_20px_-5px_rgba(30,144,255,0.8),0_20px_40px_-10px_rgba(65,105,225,0.7)]"
           style={{ backgroundImage: "url('/landingbackground.svg')" }}
         >
        
@@ -271,7 +270,7 @@ const handleSubmit = async (
                   <h3 className="text-black font-figtree font-bold text-[20px]">
                     Sign in with email
                   </h3>
-                  <h4 className="bg-linear-to-r from-blue-500 via-violet-500 to-pink-500 bg-clip-text text-transparent font-figtree font-bold text-[16px]">
+                  <h4 className="bg-linear-to-r from-blue-500 via-[#0A3D62] to-pink-500 bg-clip-text text-transparent font-figtree font-bold text-[16px]">
                     Turn your raw website activity into actionable insights.
                   </h4>
                 </div>
@@ -326,9 +325,9 @@ const handleSubmit = async (
                     {loading ? <ClipLoader size={20} color="#fff" /> : "Login"}
                   </button>
                   <h4 className="text-black font-figtree font-semibold text-[15px] mt-2">
-                    Don’t have an account?{" "}
+                    Don't have an account?{" "}
                     <span
-                      className="bg-linear-to-r from-blue-500 via-violet-500 to-pink-500 bg-clip-text text-transparent font-bold cursor-pointer"
+                      className="bg-linear-to-r  from-blue-500 via-[#0A3D62] to-pink-500 bg-clip-text text-transparent font-bold cursor-pointer"
                       onClick={() => setAccount(false)}
                     >
                       Sign Up

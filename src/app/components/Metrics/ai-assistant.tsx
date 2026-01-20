@@ -98,8 +98,8 @@ location : location,
             onClick={handleGetInsight}
             disabled={loading}
             className="lg:px-4 lg:py-3 px-3 py-3 rounded-3xl 
-              bg-linear-to-r from-blue-500 via-purple-500 to-violet-600
-              shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-white cursor-pointer"
+              bg-[#0A3D62]
+              shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-white cursor-pointer font-bold"
           >
             {loading ? (
               <PulseLoader size={20} color="white" />
