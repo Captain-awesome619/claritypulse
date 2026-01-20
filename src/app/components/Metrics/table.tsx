@@ -276,9 +276,9 @@ columnHelper.display({
         return (
           <button
             onClick={() => handleViewMore(sessionId)}
-            className="px-2 py-2 font-mono font-bold
+            className="px-2 py-2 lg:px-1 font-mono font-semibold
         bg-[#0A3D62]
-        shadow-md text-white rounded-lg hover:bg-[#29C7AC] hover:text-[#0A3D62] text-sm flex items-center gap-1 cursor-pointer"
+        shadow-md text-white rounded-lg hover:bg-[#29C7AC] hover:text-[#0A3D62] text-[10px] gap-1 flex items-center  cursor-pointer"
           >
             View More <FiExternalLink />
           </button>

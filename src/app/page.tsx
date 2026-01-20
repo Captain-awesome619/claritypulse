@@ -270,7 +270,7 @@ flex flex-col items-center gap-4 overflow-hidden  transition-all duration-700 ea
                   <h3 className="text-black font-figtree font-bold text-[20px]">
                     Sign in with email
                   </h3>
-                  <h4 className="bg-linear-to-r from-blue-500 via-[#0A3D62] to-pink-500 bg-clip-text text-transparent font-figtree font-bold text-[16px]">
+                  <h4 className="text-[#0A3D62]  font-figtree font-bold text-[16px]">
                     Turn your raw website activity into actionable insights.
                   </h4>
                 </div>
@@ -308,7 +308,7 @@ flex flex-col items-center gap-4 overflow-hidden  transition-all duration-700 ea
                       {errors.name}
                     </p>
                   )}
-                  <h4 className="text-black font-figtree font-semibold text-[15px] ml-auto mt-2 cursor-pointer"
+                  <h4 className="text-[#0A3D62]   font-figtree font-bold text-[15px] ml-auto mt-2 cursor-pointer"
                     onClick={() => setForgotModalOpen(true)}
                   >
                     Forgot Password?
@@ -327,10 +327,10 @@ flex flex-col items-center gap-4 overflow-hidden  transition-all duration-700 ea
                   <h4 className="text-black font-figtree font-semibold text-[15px] mt-2">
                     Don't have an account?{" "}
                     <span
-                      className="bg-linear-to-r  from-blue-500 via-[#0A3D62] to-pink-500 bg-clip-text text-transparent font-bold cursor-pointer"
+                      className="text-[#0A3D62]   font-bold cursor-pointer"
                       onClick={() => setAccount(false)}
                     >
-                      Sign Up
+                      SignUp
                     </span>
                   </h4>
                 </div>
@@ -451,7 +451,7 @@ flex flex-col items-center gap-4 overflow-hidden  transition-all duration-700 ea
                   <h4 className="text-black font-figtree font-semibold text-[15px] mt-2">
                     Already have an Account?{" "}
                     <span
-                      className="bg-linear-to-r from-blue-500 via-violet-500 to-pink-500 bg-clip-text text-transparent font-bold cursor-pointer"
+                      className=" text-[#0A3D62]  font-bold cursor-pointer"
                       onClick={() => setAccount(true)}
                     >
                       Login
@@ -494,21 +494,23 @@ flex flex-col items-center gap-4 overflow-hidden  transition-all duration-700 ea
               type="email"
               value={forgotEmail}
               onChange={(e) => setForgotEmail(e.target.value)}
-              className="border p-2 w-full rounded-xl bg-gray-300 mb-4 outline-none"
+              className="border border-[#0A3D62] p-2 w-full rounded-xl bg-gray-300 mb-4 outline-none"
               placeholder="Your email"
             />
+            <div className="flex items-center justify-center">
             <button
-              className="bg-black text-white px-4 py-2 rounded-2xl w-full cursor-pointer flex justify-center"
+              className="bg-[#0A3D62] text-white font-bold px-8 py-2 rounded-2xl  cursor-pointer flex justify-center"
               onClick={handleForgotPassword}
               disabled={forgotLoading}
             >
               {forgotLoading ? <PulseLoader size={8} color="#fff" /> : "Send"}
             </button>
+            </div>
           </>
         ) : (
           <div className="text-center">
             <h2 className="text-xl font-bold mb-4">Email Sent!</h2>
-            <p>Check your inbox for the password reset link.</p>
+            <p>If you have an Account Check your inbox for the password reset link.</p>
             <button
               className="mt-4 bg-black text-white px-4 py-2 rounded-2xl cursor-pointer"
               onClick={() => { setForgotModalOpen(false); setForgotSuccess(false); setForgotEmail(""); }}

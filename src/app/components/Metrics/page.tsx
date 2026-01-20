@@ -655,7 +655,7 @@ alt="logo"
 )}
           </span>{" "}
           is{" "}
-          <span className=" text-[20px] lg:text-2xl text-[#0A3D62] font-bold font-mono">
+          <span className=" text-[20px] lg:text-xl text-[#0A3D62] font-bold font-mono">
             {uniqueVisitors}
           </span>
           <br></br><span className=" text-[12px] flex items-center justify-center font-bold text-[#29C7AC] font-figtree">(latter date is the date the earliest visitor in this interval visited the site)</span>
@@ -663,7 +663,7 @@ alt="logo"
 
 <p className="text-lg font-semibold text-gray-700 font-figtree">
   🆕 Number of new users in this timeframe:{" "}
-  <span className="text-[#0A3D62] font-bold font-mono text-[20px] lg:text-2xl">
+  <span className="text-[#29C7AC] font-bold font-mono text-[20px] lg:text-xl">
     {newUsersCount}
   </span>
 </p>
@@ -678,7 +678,7 @@ alt="logo"
           <div>
             <MdOutlineBarChart size={15} color="white" />
           </div>
-          <h4 className=" text-white font-mono font-bold">View Table</h4>
+          <h4 className=" text-white font-mono font-semibold lg:text-[11px] text-[11px]">View Table</h4>
         </button>
       </div>
     </div>
@@ -700,7 +700,7 @@ alt="logo"
     </select>
      <button
           onClick={handleExportPNG}
-          className="px-4 py-2 text-white rounded-xl shadow hover:bg-blue-600 transition cursor-pointer bg-[#0A3D62] font-bold hover:text-white"
+          className="px-4 py-2 text-white rounded-xl shadow hover:bg-[#29C7AC]  hover:text-[#0A3D62] transition cursor-pointer bg-[#0A3D62] font-bold "
         >
           Export
         </button>

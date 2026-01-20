@@ -107,7 +107,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
               <div>
                 <FaMap color="white" className='text-[10px] lg:text-[14px]' />
               </div>
-              <h4 className=" text-white font-mono font-bold text-[12px] lg:text-[13px] ">View Heatmap</h4>
+              <h4 className=" text-white font-mono font-bold text-[11px] lg:text-[11px] ">View Heatmap</h4>
             </button>
     </div>
       <div className='grid grid-cols-2 lg:grid-cols-3 place-items-center gap-6'>
@@ -116,7 +116,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
        
 
         
-          <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+          <div className="lg:w-60 gap-2 lg:gap-0  lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
@@ -127,7 +127,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
+    <div className="font-mono font-bold text-[15px] lg:text-xl text-[#29C7AC]">
       {mouseCount}
     </div>
   </div>
@@ -135,7 +135,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
 
       
-          <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+          <div className="lg:w-60  gap-2 lg:gap-0 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
@@ -145,14 +145,14 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
   </div>
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
+    <div className="font-mono font-bold text-[15px] lg:text-xl text-[#29C7AC]">
       {mouseCount}{avgScroll.toFixed(1)}
     </div>
   </div>
 </div>
 
 
-          <div className="lg:w-60 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+          <div className="lg:w-60 gap-2 lg:gap-0 lg:h-40 lg:p-6 p-4 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
@@ -163,7 +163,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
+    <div className="font-mono font-bold text-[15px] lg:text-xl text-[#29C7AC]">
       {count}
     </div>
   </div>
@@ -172,7 +172,7 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
 
         
-         <div className="lg:w-60 lg:h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
+         <div className="lg:w-60  gap-2 lg:gap-0 lg:h-40 p-6 bg-white rounded-3xl shadow-lg grid grid-rows-[auto_1fr]">
   {/* Title + Icon */}
   <div className="flex items-center justify-between">
     <h3 className="font-figtree font-bold text-[#0A3D62] text-sm">
@@ -183,16 +183,16 @@ const scroll = allEvents.filter((e) => e.type === "scroll").length;
 
   {/* Metric Number */}
   <div className="flex items-center justify-center">
-    <div className="font-mono font-bold text-[20px] lg:text-3xl text-[#29C7AC]">
+    <div className="font-mono font-bold text-[15px] lg:text-xl text-[#29C7AC]">
       {displayDuration  } 
     </div>
   </div>
-   <div className="flex justify-end ite">
+   <div className="flex justify-end items-end">
         <button
           onClick={() => setInMinutes(!inMinutes)}
-          className="px-3 py-1 text-sm text-[#29C7AC] font-bold bg-[#0A3D62] rounded-full hover:bg-purple-200 transition cursor-pointer"
+          className="px-2 py-1 text-sm text-[#29C7AC] font-bold bg-[#0A3D62] rounded-full transition cursor-pointer"
         >
-          {inMinutes ? "Show in seconds" : "Show in minutes"}
+          {inMinutes ? "Show in sec" : "Show in min"}
         </button>
       </div>
 </div>

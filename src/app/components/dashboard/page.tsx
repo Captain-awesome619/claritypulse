@@ -310,13 +310,13 @@ async function deleteProjectAndEvents() {
 
       {snippet ? (
         <div className="relative lg:p-8  pt-4 ">
-        <div className="  lg:w-[600px] lg:h-[400px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
+        <div className="  lg:w-[600px] lg:h-[440px] bg-gray-700 rounded-2xl border-2 border-green-300 flex flex-col justify-between">
 <div className="flex flex-col p-4 gap-4">
-<h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {name ? <span>{name}</span> : <span>{projectName}</span>}</h3>
-<h3 className="text-green-300  font-mono font-bold lg:text-[18px]"> {site ? <span>{site}</span> : <span>{domain}</span>}</h3>
+<h3 className="text-green-300  font-mono font-bold lg:text-[15px]"> {name ? <span>{name}</span> : <span>{projectName}</span>}</h3>
+<h3 className="text-green-300  font-mono font-bold lg:text-[15px]"> {site ? <span>{site}</span> : <span>{domain}</span>}</h3>
 <div className=" flex flex-col gap-3">
 <div >
-<h3 className="text-[13px] bg-linear-to-r from-[#29C7AC] via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-bold lg:text-[18px]">
+<h3 className="text-[13px] bg-linear-to-r from-[#29C7AC] via-violet-500 to-blue-500 bg-clip-text text-transparent font-mono font-semibold lg:text-[15px]">
   {snippet}
 
 </h3>
@@ -336,7 +336,7 @@ async function deleteProjectAndEvents() {
       )}
     </button>
 </div>
-<div className="text-green-300 font-mono font-bold flex flex-col">
+<div className="text-green-300 text-[12px] lg:text-[13px] font-mono font-bold flex flex-col">
   Copy and Paste the script above into the {'<Head> , <body> or parent tag '} section of your code.
   <a  href="https://www.linkedin.com/posts/toluwalase-ogunsola-frontend-developer_claritypulse-httpslnkdindnsfducc-activity-7407421899175174144-hjMd?utm_source=share&utm_medium=member_desktop&rcm=ACoAADqpNQ0BTodOwUQ7kv01vuCXDdJanHgLoyQ"
   target="_blank"
@@ -345,10 +345,10 @@ async function deleteProjectAndEvents() {
   >
   <button
               className="lg:px-4 lg:py-3 px-3 py-3 rounded-3xl 
-              bg-linear-to-r from-blue-500 via-[#29C7AC] to-violet-600
+             bg-green-300
               shadow-md hover:shadow-lg transition cursor-pointer flex items-center justify-center lg:gap-2 gap-2"
             >
-              <h4 className=" text-white font-mono font-bold text-[12px] lg:text-[13px] ">View Demo</h4>
+              <h4 className="  text-[#0A3D62] font-mono font-bold text-[12px] lg:text-[13px]  ">View Demo</h4>
             </button>
 
   </a>
@@ -356,7 +356,7 @@ async function deleteProjectAndEvents() {
 </div>
 </div>
 <div className="p-4 flex items-center justify-between">
-  <button className="cursor-pointer px-4 py-3 rounded-3xl text-black bg-green-300 font-mono font-bold" onClick={viewMetrics}>
+  <button className="cursor-pointer px-3 text-[12px] lg:text-[13px] py-3 rounded-3xl text-[#0A3D62] bg-green-300 font-mono font-bold" onClick={viewMetrics}>
     View Site Metrics
   </button>
 
