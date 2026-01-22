@@ -562,8 +562,8 @@ alt="logo"
             onClick={() => setActivePage("Settings")}
             className={`cursor-pointer py-2 px-3 rounded-xl font-medium transition-all items-center justify-between flex
               ${activePage === "Settings"
-                ? "bg-linear-to-r from-blue-500 via-[#0A3D62] to-violet-600 shadow-md"
-                : "hover:bg-[#29C7AC]"}`}
+                ? "bg-linear-to-r from-blue-500 via-[#29C7AC] to-violet-600 shadow-md"
+          : "hover:bg-[#29C7AC]"}`}
           >
             Settings
             <IoSettings />
@@ -689,7 +689,7 @@ alt="logo"
     <h3 className="text-xl font-bold text-[#0A3D62]">Visitor Trend</h3>
     <div className =" flex items-center gap-2">
     <select
-      className="bg-[#0A3D62]  text-white font-bold bg rounded-xl px-3  py-1 cursor-pointer"
+      className="bg-[#0A3D62]  text-white font-mono font-semibold lg:text-[15px] text-[12px] bg rounded-xl px-3  py-1 cursor-pointer"
       value={timeRange}
       onChange={(e) => setTimeRange(e.target.value as any)}
     >
@@ -700,7 +700,7 @@ alt="logo"
     </select>
      <button
           onClick={handleExportPNG}
-          className="px-4 py-2 text-white rounded-xl shadow hover:bg-[#29C7AC]  hover:text-[#0A3D62] transition cursor-pointer bg-[#0A3D62] font-bold "
+          className="px-4 py-2 text-white rounded-xl shadow hover:bg-[#29C7AC]  hover:text-[#0A3D62] transition cursor-pointer bg-[#0A3D62] font-mono font-semibold lg:text-[15px] text-[11px] "
         >
           Export
         </button>
