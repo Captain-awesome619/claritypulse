@@ -317,7 +317,7 @@ columnHelper.display({
             className="mb-6 ml-4 cursor-pointer"
             onClick={decrement}
           />
-          <div className="p-5 bg-white rounded-2xl shadow-md border border-gray-200 ">
+          <div className="p-5 bg-white rounded-2xl shadow-md border border-gray-200 mb-7">
             <h2 className="text-xl font-bold mb-4 text-[#0A3D62] font-figtree">
               Session Activity
             </h2>
