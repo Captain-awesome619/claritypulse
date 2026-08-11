@@ -92,7 +92,6 @@ const handleSubmit = async (
   e: FormEvent<HTMLFormElement>
 ): Promise<void> => {
   e.preventDefault();
- 
 
   try {
     setLoading(true);
@@ -116,10 +115,17 @@ const handleSubmit = async (
 
     } else {
       // ---------- SIGNUP ----------
-       if (!validateAll()) return;
+      if (!validateAll()) return;
+
       const { data, error } = await supabase.auth.signUp({
         email: form.email.trim(),
         password: form.password,
+        options: {
+          data: {
+            name: form.name.trim(),
+            username: form.username.trim(),
+          },
+        },
       });
 
       if (error) {
@@ -127,37 +133,8 @@ const handleSubmit = async (
         return;
       }
 
-      if (!data.user) {
-        alert("Signup initiated. Please check your email to verify your account.");
-        return;
-      }
-
-      const userId = data.user.id;
-
-      const { data: existingProfile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (!existingProfile) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert([
-            {
-              id: userId,
-              name: form.name.trim(),
-              username: form.username.trim(),
-            },
-          ]);
-
-        if (profileError) {
-          alert("Error saving profile info");
-          return;
-        }
-      }
-
-      alert("Signup successful! Please verify your email.");
+      alert("Signup successful! .");
+      setAccount(true);
     }
   } catch (err) {
     console.error(err);
@@ -166,7 +143,6 @@ const handleSubmit = async (
     setLoading(false);
   }
 };
-
 
 
 
